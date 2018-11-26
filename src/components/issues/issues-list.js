@@ -10,8 +10,8 @@ import IssuesListItem from './issues-list-item'
 class Issues extends Component {
   constructor(props) {
     super(props)
-    const { owner, repo, fetchIssues } = props
-    fetchIssues(owner, repo)
+    const { owner, repo, fetchIssues, perPage, page } = props
+    fetchIssues(owner, repo, perPage, page)
   }
   render() {
     const { loading, issues } = this.props
@@ -20,26 +20,28 @@ class Issues extends Component {
     }
 
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Opening date/time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {issues.map(i => (
-            <tr key={i.id} onClick={() => console.log('to detais', i.url)}>
-              <IssuesListItem
-                number={i.number}
-                title={i.title}
-                dateTime={i.created_at}
-              />
+      <>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Opening date/time</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {issues.map(i => (
+              <tr key={i.id} onClick={() => console.log('to detais', i.url)}>
+                <IssuesListItem
+                  number={i.number}
+                  title={i.title}
+                  dateTime={i.created_at}
+                />
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </>
     )
   }
 }

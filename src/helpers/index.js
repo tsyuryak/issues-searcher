@@ -5,3 +5,6 @@ export const toLocalDateTime = string => {
     time: dateTime.toLocaleTimeString(),
   }
 }
+
+export const generateId = () =>
+  (Math.random() * 10000 * Date.now()).toString(36)

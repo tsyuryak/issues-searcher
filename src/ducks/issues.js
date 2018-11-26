@@ -3,6 +3,7 @@ import { Record, List } from 'immutable'
 import { takeLatest, call, put } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { createSelector } from 'reselect'
+import Paginator from './func/paginator'
 
 export const moduleName = 'issues'
 const prefix = `${appName}/${moduleName}`
@@ -14,11 +15,12 @@ export const FETCH_ISSUES_SUCCESS = `${prefix}/FETCH_ISSUES_SUCCESS`
 export const ReducerRecord = Record({
   loading: false,
   loaded: false,
+  paginator: {},
   issues: [],
 })
 
 export default function reducer(state = ReducerRecord(), action) {
-  const { issues } = action
+  const { issues, paginator } = action
   switch (action.type) {
     case FETCH_ISSUES_REQUEST:
       return state.set('loading', true).set('loaded', false)
@@ -27,6 +29,7 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('loading', false)
         .set('loaded', true)
         .set('issues', issues)
+        .set('paginator', paginator)
     default:
       return state
   }
@@ -47,37 +50,55 @@ export const loadedSelector = createSelector(
   stateSelector,
   state => state.loaded
 )
-
+export const paginatorSelector = createSelector(
+  stateSelector,
+  state => state.paginator
+)
 //AC
 
-export const redirectToIssues = (owner, repo) => ({
+export const redirectToIssues = (owner, repo, perPage = 30, page = 1) => ({
   type: REDIRECT_TO_ISSUES,
-  payload: { owner, repo },
+  payload: { owner, repo, perPage, page },
 })
 
-export const fetchIssues = (owner, repo) => ({
+export const fetchIssues = (owner, repo, perPage, page) => ({
   type: FETCH_ISSUES_REQUEST,
-  payload: { owner, repo },
+  payload: { owner, repo, page, perPage },
 })
 
 //SAGAS
 
 export function* redirectToIssuesSaga(action) {
-  const { owner, repo } = action.payload
-  const url = `/issues/${owner}/${repo}`
+  const { owner, repo, perPage, page } = action.payload
+  const url = `/issues/${owner}/${repo}/${perPage}/${page}`
   yield put(push(url))
 }
 
 export function* fetchIssuesSaga(action) {
-  const { owner, repo } = action.payload
-  const reqUrl = `repos/${owner}/${repo}/issues`
+  const { owner, repo, page, perPage } = action.payload
+  const reqUrl = `repos/${owner}/${repo}/issues?per_page=${perPage}&page=${page}`
   try {
     const req = yield call([axiosInst, axiosInst.get], reqUrl)
+
+    if (req.data.length === 0) {
+      throw Error()
+    }
+
+    const paginator = new Paginator(req.headers.link)
     yield put({
       type: FETCH_ISSUES_SUCCESS,
       issues: List(req.data),
+      paginator: {
+        hasPages: paginator.hasPages(),
+        maxPage: paginator.maxPage(),
+        perPage,
+        page,
+        url: `/issues/${owner}/${repo}`,
+      },
     })
-  } catch (error) {}
+  } catch (error) {
+    yield put(push('/404'))
+  }
 }
 
 export function* saga() {
