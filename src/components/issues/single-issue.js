@@ -7,6 +7,7 @@ import {
   loadedSelector,
   userSelector,
 } from '../../ducks/single-issue'
+import history from '../../history'
 
 class SingleIssue extends Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class SingleIssue extends Component {
           <h1>{title}</h1>
           <p>{body}</p>
         </div>
+        <button onClick={history.goBack}>Back</button>
       </div>
     )
   }
