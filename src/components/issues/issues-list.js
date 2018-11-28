@@ -6,6 +6,7 @@ import {
   issuesSelector,
 } from '../../ducks/issues'
 import IssuesListItem from './issues-list-item'
+import { redirectToIssue } from '../../ducks/single-issue'
 
 class Issues extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class Issues extends Component {
           </thead>
           <tbody>
             {issues.map(i => (
-              <tr key={i.id} onClick={() => console.log('to detais', i.url)}>
+              <tr key={i.id} onClick={() => this.props.redirectToIssue(i.url)}>
                 <IssuesListItem
                   number={i.number}
                   title={i.title}
@@ -51,5 +52,5 @@ export default connect(
     loading: loadingSelector(state),
     issues: issuesSelector(state),
   }),
-  { fetchIssues }
+  { fetchIssues, redirectToIssue }
 )(Issues)

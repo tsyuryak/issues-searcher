@@ -1,9 +1,14 @@
 import React from 'react'
 
-function ValidInput({ inputText, error }) {
+function ValidInput({ events, error, value }) {
   return (
     <div>
-      <input type="search" onChange={e => inputText(e.target.value)} />
+      <input
+        type="search"
+        onChange={e => events.onInputText(e.target.value)}
+        onKeyUp={e => events.onKeyPressHandler(e.keyCode)}
+        value={value}
+      />
       {error && <span>{error}</span>}
     </div>
   )
