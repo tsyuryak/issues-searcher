@@ -18,9 +18,18 @@ class SingleIssue extends Component {
       return <h1>Loading...</h1>
     }
     console.log('SI', this.props.issue)
+    const { avatar_url, html_url, login } = this.props.user
+    const { title, body } = this.props.issue
     return (
       <div>
-        <img src={this.props.user.avatar_url} alt={this.props.user.login} />
+        <img src={avatar_url} alt={login} />
+        <h2>
+          <a href={html_url}>{login}</a>
+        </h2>
+        <div>
+          <h1>{title}</h1>
+          <p>{body}</p>
+        </div>
       </div>
     )
   }

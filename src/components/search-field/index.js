@@ -12,6 +12,7 @@ class SearchField extends Component {
     inputText: '',
     errorMessage: '',
     dropdown: false,
+    owner: '',
   }
 
   handleSubmit = e => {
@@ -35,7 +36,7 @@ class SearchField extends Component {
       const owner = this.state.inputText.split(last)[0].trim()
       if (owner) {
         this.props.fetchRepos(owner)
-        this.setState({ dropdown: true })
+        this.setState({ dropdown: true, owner })
       }
     }
   }
@@ -56,11 +57,9 @@ class SearchField extends Component {
   }
 
   onClickHandler = repo => {
-    const owner = this.state.inputText
-    const args = owner + repo
-    const data = this.getData(args)
-    this.props.redirectToIssues(data.owner, data.repo)
-    this.setState({ dropdown: false, inputText: args })
+    const { owner } = this.state
+    this.props.redirectToIssues(owner, repo)
+    this.setState({ dropdown: false, inputText: `${owner}/${repo}` })
   }
 
   render() {
