@@ -7,6 +7,8 @@ import {
 } from '../../ducks/issues'
 import IssuesListItem from './issues-list-item'
 import { redirectToIssue } from '../../ducks/single-issue'
+import styles from './styles/issues-list.module.css'
+import Loader from '../common/loader'
 
 class Issues extends Component {
   constructor(props) {
@@ -16,14 +18,15 @@ class Issues extends Component {
   }
   render() {
     const { loading, issues } = this.props
-    if (loading) {
-      return <div>LOADING...</div>
+    if (loading || false) {
+      console.log('object')
+      return <Loader />
     }
 
     return (
       <>
         <table>
-          <thead>
+          <thead className={styles['table-header']}>
             <tr>
               <th>#</th>
               <th>Title</th>
@@ -32,7 +35,11 @@ class Issues extends Component {
           </thead>
           <tbody>
             {issues.map(i => (
-              <tr key={i.id} onClick={() => this.props.redirectToIssue(i.url)}>
+              <tr
+                className={styles['content']}
+                key={i.id}
+                onClick={() => this.props.redirectToIssue(i.url)}
+              >
                 <IssuesListItem
                   number={i.number}
                   title={i.title}

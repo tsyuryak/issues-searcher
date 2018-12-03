@@ -1,0 +1,27 @@
+.paginator-container {
+  margin-bottom: 15px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+
+.pagination li {
+  display: inline-block;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}
+
+.pagination li a {
+  display: inline-block;
+  padding: 7px 12px;
+  color: #000;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.pagination li a.active {
+  background-color: dodgerblue;
+  font-weight: 600;
+  color: white;
+  cursor: default;
+}

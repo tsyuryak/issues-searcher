@@ -1,0 +1,40 @@
+.single-issue {
+  display: flex;
+  flex-direction: column;
+}
+.single-issue img {
+  width: 250px;
+  height: 250px;
+  margin-left: 10%; 
+}
+
+.single-issue button {
+  background-color: dodgerblue;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  width: 30%;
+  margin: 0 auto;
+  border-radius: 5px;
+}
+
+.single-issue button:hover {
+  cursor: pointer;
+}
+
+.single-issue .issue-body {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.single-issue h2 {
+  margin-left: 10%;
+}
+
+.single-issue h2 a {
+  cursor: pointer;
+}

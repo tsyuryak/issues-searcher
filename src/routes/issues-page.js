@@ -8,7 +8,6 @@ function IssuesPage({ match, locationKey, paginator }) {
   const { owner, repo, perpage, page } = match.params
   return (
     <div>
-      {paginator.hasPages && <Paginator owner={owner} repo={repo} />}
       <Issues
         key={locationKey}
         owner={owner}
@@ -16,6 +15,7 @@ function IssuesPage({ match, locationKey, paginator }) {
         perPage={perpage}
         page={page}
       />
+      {paginator.hasPages && <Paginator owner={owner} repo={repo} />}
     </div>
   )
 }

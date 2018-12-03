@@ -8,6 +8,8 @@ import {
   userSelector,
 } from '../../ducks/single-issue'
 import history from '../../history'
+import Loader from '../common/loader'
+import styles from './styles/single-issue.module.css'
 
 class SingleIssue extends Component {
   constructor(props) {
@@ -16,18 +18,17 @@ class SingleIssue extends Component {
   }
   render() {
     if (this.props.loading) {
-      return <h1>Loading...</h1>
+      return <Loader />
     }
-    console.log('SI', this.props.issue)
     const { avatar_url, html_url, login } = this.props.user
     const { title, body } = this.props.issue
     return (
-      <div>
+      <div className={styles['single-issue']}>
         <img src={avatar_url} alt={login} />
         <h2>
           <a href={html_url}>{login}</a>
         </h2>
-        <div>
+        <div className={styles['issue-body']}>
           <h1>{title}</h1>
           <p>{body}</p>
         </div>

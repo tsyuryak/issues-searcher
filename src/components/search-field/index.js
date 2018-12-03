@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import ValidInput from './valid-input'
 import DropdownList from './dropdown-list'
-import styles from './search-field.module.css'
+import styles from './styles/search-field.module.css'
 import { redirectToIssues } from '../../ducks/issues'
 import { fetchRepos, reposSelector, loadedSelector } from '../../ducks/repos'
-import { getItems, getSplitter } from './search-field-func'
+import { getItems, getSplitter } from './func/search-field-func'
 
 class SearchField extends Component {
   state = {
@@ -14,6 +14,16 @@ class SearchField extends Component {
     dropdown: false,
     owner: '',
   }
+
+  componentDidMount() {
+    window.addEventListener('click', this.setDropdownFalse)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.setDropdownFalse)
+  }
+
+  setDropdownFalse = () => this.setState({ dropdown: false })
 
   handleSubmit = e => {
     e.preventDefault()
@@ -59,7 +69,7 @@ class SearchField extends Component {
   onClickHandler = repo => {
     const { owner } = this.state
     this.props.redirectToIssues(owner, repo)
-    this.setState({ dropdown: false, inputText: `${owner}/${repo}` })
+    this.setState({ inputText: `${owner}/${repo}` })
   }
 
   render() {
@@ -69,20 +79,22 @@ class SearchField extends Component {
     }
     return (
       <div className={styles['search-field']}>
-        <form onSubmit={this.handleSubmit}>
-          <ValidInput
-            events={events}
-            error={this.state.errorMessage}
-            value={this.state.inputText}
-          />
+        <form autoComplete="off" onSubmit={this.handleSubmit}>
+          <div className={styles['autocomplete']}>
+            <ValidInput
+              events={events}
+              error={this.state.errorMessage}
+              value={this.state.inputText}
+            />
+            {this.state.dropdown && this.props.repoLoaded && (
+              <DropdownList
+                repos={this.props.repos}
+                onClickHandler={this.onClickHandler}
+              />
+            )}
+          </div>
           <input type="submit" disabled={!this.state.inputText} />
         </form>
-        {this.state.dropdown && this.props.repoLoaded && (
-          <DropdownList
-            repos={this.props.repos}
-            onClickHandler={this.onClickHandler}
-          />
-        )}
       </div>
     )
   }

@@ -1,7 +1,6 @@
 import { appName, axiosInst } from '../config'
 import { Record, List } from 'immutable'
 import { takeLatest, call, put } from 'redux-saga/effects'
-import { push } from 'connected-react-router'
 import { createSelector } from 'reselect'
 
 export const moduleName = 'repo'
@@ -57,10 +56,8 @@ export const fetchRepos = owner => ({
 export function* fetchReposSaga(action) {
   const { owner } = action
   const reqUrl = `users/${owner}/repos`
-  console.log(owner)
   try {
     const req = yield call([axiosInst, axiosInst.get], reqUrl)
-    console.log(req)
     yield put({
       type: FETCH_REPOS_SUCCESS,
       repos: List(req.data),

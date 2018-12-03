@@ -1,5 +1,5 @@
 import React from 'react'
-import { getSplitter, getItems } from './search-field-func'
+import { getSplitter, getItems } from '../func/search-field-func'
 
 test('a string has splitter', () => {
   const s1 = /\s*\/{1,}\s*/

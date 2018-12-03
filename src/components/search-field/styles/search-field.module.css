@@ -1,0 +1,33 @@
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+.search-field {
+  margin-bottom: 10px;
+}
+
+.search-field input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border:solid 1px #ccc;
+  border-radius: 5px;
+}
+
+.search-field input[type=submit] {
+  margin-left: 5px;
+  background-color: DodgerBlue;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.search-field input[type=submit]:disabled {
+  background-color: lightblue;
+  color: #fff;
+}
+
+
+

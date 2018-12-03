@@ -1,36 +1,53 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import {
-  fetchIssues,
-  paginatorSelector,
-  redirectToIssues,
-} from '../../ducks/issues'
+import { paginatorSelector, redirectToIssues } from '../../ducks/issues'
+import { loadedSelector as issuesLoaded } from '../../ducks/issues'
 import { NavLink } from 'react-router-dom'
 import { generateId } from '../../helpers'
+import styles from './styles/issues-paginator.module.css'
 
-function IssuesPaginator({ redirectToIssues, paginator, owner, repo }) {
+function IssuesPaginator({
+  redirectToIssues,
+  paginator,
+  owner,
+  repo,
+  issuesLoaded,
+}) {
   const { maxPage, url, perPage } = paginator
 
   const changeItemsNum = e => {
     const pageNum = +e.target.value
-    const firstPage = 1
-    redirectToIssues(owner, repo, pageNum, firstPage)
+    const startPage = 1
+    redirectToIssues(owner, repo, pageNum, startPage)
   }
-  const keyUpHandler = e => {
-    if (e.keyCode !== 13) return
-    changeItemsNum(e)
+
+  if (!issuesLoaded) {
+    return null
   }
 
   return (
-    <div>
-      <input onKeyUp={e => keyUpHandler(e)} onBlur={e => changeItemsNum(e)} />
-      <ul>
-        {[...Array(maxPage).keys()].map(i => (
-          <li key={generateId()}>
-            <NavLink to={`${url}/${perPage}/${i + 1}`}>{i + 1}</NavLink>
-          </li>
+    <div className={styles['paginator-container']}>
+      <select onChange={e => changeItemsNum(e)} value={+perPage}>
+        {[10, 30, 50, 70, 100].map(item => (
+          <option key={generateId()} value={item}>
+            {item}
+          </option>
         ))}
-      </ul>
+      </select>
+      <div className={styles['pagination']}>
+        <ul>
+          {[...Array(maxPage).keys()].map(i => (
+            <li key={generateId()}>
+              <NavLink
+                activeClassName={styles['active']}
+                to={`${url}/${perPage}/${i + 1}`}
+              >
+                {i + 1}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
@@ -38,6 +55,7 @@ function IssuesPaginator({ redirectToIssues, paginator, owner, repo }) {
 export default connect(
   state => ({
     paginator: paginatorSelector(state),
+    issuesLoaded: issuesLoaded(state),
   }),
   { redirectToIssues }
 )(IssuesPaginator)

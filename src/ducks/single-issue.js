@@ -1,6 +1,6 @@
 import { appName, axiosInst, baseURL } from '../config'
 import { takeLatest, call, put } from 'redux-saga/effects'
-import { Record, List } from 'immutable'
+import { Record } from 'immutable'
 import { push } from 'connected-react-router'
 import { createSelector } from 'reselect'
 

@@ -1,8 +1,9 @@
 import React from 'react'
+import styles from './styles/valid-input.module.css'
 
 function ValidInput({ events, error, value }) {
   return (
-    <div>
+    <div className={styles['valid-input']}>
       <input
         type="search"
         onChange={e => events.onInputText(e.target.value)}
