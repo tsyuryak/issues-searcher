@@ -1,15 +1,14 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
-import SearchField from './components/search-field'
 import IssuesPage from './routes/issues-page'
 import SingleIssuePage from './routes/single-issue-page'
 import Status404 from './routes/status404-page'
-import styles from './app.module.css'
+import HomePage from './routes/home-page'
+import styles from './styles/app.module.css'
 
 function App() {
   return (
     <div className={styles['app']}>
-      <SearchField />
       <Switch>
         <Route
           path="/repos/:owner/:repo/issues/:id"
@@ -21,7 +20,7 @@ function App() {
         />
         <Route path="/issues/:owner/:repo" component={IssuesPage} />
         <Route path="/404" component={Status404} />
-        <Route path="/" render={() => <strong>Enter repo owner</strong>} />
+        <Route path="/" component={HomePage} />
       </Switch>
     </div>
   )

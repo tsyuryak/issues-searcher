@@ -2,12 +2,14 @@ import React from 'react'
 import Issues from '../components/issues/issues-list'
 import { connect } from 'react-redux'
 import Paginator from '../components/issues/issues-paginator'
+import SearchField from '../components/search-field'
 import { paginatorSelector } from '../ducks/issues'
 
 function IssuesPage({ match, locationKey, paginator }) {
   const { owner, repo, perpage, page } = match.params
   return (
     <div>
+      <SearchField />
       <Issues
         key={locationKey}
         owner={owner}

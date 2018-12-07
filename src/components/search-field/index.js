@@ -96,7 +96,7 @@ class SearchField extends Component {
               )}
             </li>
             <li>
-              <input type="submit" disabled={!this.state.inputText} />
+              <input type="submit" disabled={!this.state.inputText.trim()} />
             </li>
           </ul>
         </form>

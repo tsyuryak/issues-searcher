@@ -56,6 +56,7 @@
 .search-field form ul li input[type=submit]:disabled {
   background-color: rgb(155, 185, 167);
   color: rgb(67, 82, 69);
+  cursor: default;
 }
 
 .search-field ul.repo-list {

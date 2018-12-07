@@ -5,9 +5,9 @@ import { ConnectedRouter } from 'connected-react-router'
 import store from './redux'
 import history from './history'
 import App from './app'
-import './index.css'
+import './styles/index.css'
 import * as serviceWorker from './serviceWorker'
-
+//
 const root = (
   <Provider store={store}>
     <ConnectedRouter history={history}>
