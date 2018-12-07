@@ -79,21 +79,26 @@ class SearchField extends Component {
     }
     return (
       <div className={styles['search-field']}>
-        <form autoComplete="off" onSubmit={this.handleSubmit}>
-          <div className={styles['autocomplete']}>
-            <ValidInput
-              events={events}
-              error={this.state.errorMessage}
-              value={this.state.inputText}
-            />
-            {this.state.dropdown && this.props.repoLoaded && (
-              <DropdownList
-                repos={this.props.repos}
-                onClickHandler={this.onClickHandler}
+        <form onSubmit={this.handleSubmit}>
+          <ul>
+            <li>
+              <ValidInput
+                events={events}
+                error={this.state.errorMessage}
+                value={this.state.inputText}
               />
-            )}
-          </div>
-          <input type="submit" disabled={!this.state.inputText} />
+              {this.state.dropdown && this.props.repoLoaded && (
+                <DropdownList
+                  className={styles['repo-list']}
+                  repos={this.props.repos}
+                  onClickHandler={this.onClickHandler}
+                />
+              )}
+            </li>
+            <li>
+              <input type="submit" disabled={!this.state.inputText} />
+            </li>
+          </ul>
         </form>
       </div>
     )

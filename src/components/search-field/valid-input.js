@@ -1,17 +1,20 @@
 import React from 'react'
-import styles from './styles/valid-input.module.css'
 
-function ValidInput({ events, error, value }) {
+function ValidInput({ events, value }) {
   return (
-    <div className={styles['valid-input']}>
+    <>
       <input
+        autoComplete="off"
         type="search"
+        name="search"
+        id="search-field"
+        placeholder="владелец и его репо"
+        maxLength="64"
         onChange={e => events.onInputText(e.target.value)}
         onKeyUp={e => events.onKeyPressHandler(e.keyCode)}
         value={value}
       />
-      {error && <span>{error}</span>}
-    </div>
+    </>
   )
 }
 

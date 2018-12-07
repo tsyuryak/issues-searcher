@@ -1,17 +1,14 @@
 import React from 'react'
-import styles from './styles/dropdown-list.module.css'
 
-function DropdownList({ repos, onClickHandler }) {
+function DropdownList({ repos, onClickHandler, className }) {
   return (
-    <div className={styles['dropdown']}>
-      <ul>
-        {repos.map(repo => (
-          <li key={repo.id}>
-            <div onClick={() => onClickHandler(repo.name)}>{repo.name}</div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className={className}>
+      {repos.map(repo => (
+        <li key={repo.id}>
+          <div onClick={() => onClickHandler(repo.name)}>{repo.name}</div>
+        </li>
+      ))}
+    </ul>
   )
 }
 
