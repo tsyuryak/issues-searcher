@@ -8,7 +8,7 @@ function ValidInput({ events, value }) {
         type="search"
         name="search"
         id="search-field"
-        placeholder="владелец и его репо"
+        placeholder="an owner and its repo"
         maxLength="64"
         onChange={e => events.onInputText(e.target.value)}
         onKeyUp={e => events.onKeyPressHandler(e.keyCode)}

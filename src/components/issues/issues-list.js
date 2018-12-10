@@ -18,6 +18,7 @@ class Issues extends Component {
   }
   render() {
     const { loading, issues } = this.props
+
     if (loading || false) {
       console.log('object')
       return <Loader />
@@ -25,30 +26,21 @@ class Issues extends Component {
 
     return (
       <>
-        <table>
-          <thead className={styles['table-header']}>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Opening date/time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {issues.map(i => (
-              <tr
-                className={styles['content']}
-                key={i.id}
-                onClick={() => this.props.redirectToIssue(i.url)}
-              >
-                <IssuesListItem
-                  number={i.number}
-                  title={i.title}
-                  dateTime={i.created_at}
-                />
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <ul className={styles['list']}>
+          {issues.map(i => (
+            <li
+              className={styles['list-item']}
+              key={i.id}
+              onClick={() => this.props.redirectToIssue(i.url)}
+            >
+              <IssuesListItem
+                number={i.number}
+                title={i.title}
+                dateTime={i.created_at}
+              />
+            </li>
+          ))}
+        </ul>
       </>
     )
   }

@@ -41,6 +41,7 @@ class SearchField extends Component {
   }
 
   onKeyPressHandler = keyCode => {
+    //key codes 32-" ", 111,191 - "/"
     if ([32, 111, 191].includes(keyCode)) {
       const last = this.state.inputText.slice(-1)
       const owner = this.state.inputText.split(last)[0].trim()

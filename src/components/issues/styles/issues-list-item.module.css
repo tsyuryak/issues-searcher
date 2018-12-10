@@ -1,0 +1,23 @@
+li {
+  margin: 2px 0;
+}
+.number-item {
+  color: green;
+  font-weight: bold;
+}
+
+.number-item::before {
+  content: "#"
+}
+
+.title-item {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.datetime-item {
+  font-size: 10px;
+  color: grey;
+  padding: 1px;
+}
