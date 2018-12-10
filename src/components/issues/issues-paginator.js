@@ -25,29 +25,38 @@ function IssuesPaginator({
     return null
   }
 
-  return (
-    <div className={styles['paginator-container']}>
-      <select onChange={e => changeItemsNum(e)} value={+perPage}>
+  /* <select onChange={e => changeItemsNum(e)} value={+perPage}>
         {[10, 30, 50, 70, 100].map(item => (
           <option key={generateId()} value={item}>
             {item}
           </option>
         ))}
-      </select>
-      <div className={styles['pagination']}>
-        <ul>
-          {[...Array(maxPage).keys()].map(i => (
-            <li key={generateId()}>
-              <NavLink
-                activeClassName={styles['active']}
-                to={`${url}/${perPage}/${i + 1}`}
-              >
-                {i + 1}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </div>
+      </select>*/
+
+  return (
+    <div className={styles['container']}>
+      <ul className={styles['page-list']}>
+        <li>
+          <a>
+            <span className="prev-icon">Prev</span>
+          </a>
+        </li>
+        {[...Array(maxPage).keys()].map(i => (
+          <li key={generateId()}>
+            <NavLink
+              activeClassName={styles['active']}
+              to={`${url}/${perPage}/${i + 1}`}
+            >
+              {i + 1}
+            </NavLink>
+          </li>
+        ))}
+        <li>
+          <a className="disabled">
+            <span className="next-icon">Next</span>
+          </a>
+        </li>
+      </ul>
     </div>
   )
 }
