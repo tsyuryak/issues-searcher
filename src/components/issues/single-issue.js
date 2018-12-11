@@ -24,12 +24,20 @@ class SingleIssue extends Component {
     const { title, body } = this.props.issue
     return (
       <div className={styles['single-issue']}>
-        <img src={avatar_url} alt={login} />
-        <h2>
-          <a href={html_url}>{login}</a>
-        </h2>
-        <div className={styles['issue-body']}>
+        <ul>
+          <li>
+            <img src={avatar_url} alt={login} />
+          </li>
+          <li>
+            <h2>
+              <a href={html_url}>{login}</a>
+            </h2>
+          </li>
+        </ul>
+        <div className={styles['title']}>
           <h1>{title}</h1>
+        </div>
+        <div className={styles['issue-body']}>
           <p>{body}</p>
         </div>
         <button onClick={history.goBack}>Back</button>

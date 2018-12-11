@@ -1,0 +1,60 @@
+.single-issue {
+  margin: 0 10px;
+}
+
+.single-issue ul {
+  display: flex;
+  flex-direction: column;
+}
+
+.single-issue ul li {
+  margin-right: 10px;
+}
+
+.single-issue ul li > h2 > a {
+  text-decoration: none;
+  color: darkblue;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.single-issue ul li > h2 > a:hover {
+  text-decoration: underline;
+}
+
+.single-issue ul li:first-child {
+  margin-right: 10px;
+}
+
+.single-issue img {
+  width: 200px;
+  height: 200px;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 3px gray;
+}
+
+.issue-body {
+  margin: 10px 0;
+  padding: 5px;
+  box-shadow: 0 0 2px 3px gray;
+  border-radius: 5px;
+}
+
+li h1 {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.title {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.title h1 {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+button {
+  cursor: pointer;
+}
