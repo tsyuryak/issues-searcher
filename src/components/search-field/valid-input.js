@@ -1,9 +1,11 @@
 import React from 'react'
 
-function ValidInput({ events, value }) {
+function ValidInput({ events, error, value }) {
+  const style = error ? { color: 'red' } : { color: 'black' }
   return (
     <>
       <input
+        style={style}
         autoComplete="off"
         type="search"
         name="search"
@@ -13,6 +15,7 @@ function ValidInput({ events, value }) {
         onChange={e => events.onInputText(e.target.value)}
         onKeyUp={e => events.onKeyPressHandler(e.keyCode)}
         value={value}
+        onFocus={e => error && e.target.select()}
       />
     </>
   )

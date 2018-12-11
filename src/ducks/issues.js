@@ -16,11 +16,13 @@ export const ReducerRecord = Record({
   loading: false,
   loaded: false,
   paginator: {},
-  issues: [],
+  issues: List([]),
+  currentOwner: null,
+  currentRepo: null,
 })
 
 export default function reducer(state = ReducerRecord(), action) {
-  const { issues, paginator } = action
+  const { issues, owner, repo, paginator } = action
   switch (action.type) {
     case FETCH_ISSUES_REQUEST:
       return state.set('loading', true).set('loaded', false)
@@ -30,6 +32,8 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('loaded', true)
         .set('issues', issues)
         .set('paginator', paginator)
+        .set('currentOwner', owner)
+        .set('currentRepo', repo)
     default:
       return state
   }
@@ -54,6 +58,20 @@ export const paginatorSelector = createSelector(
   stateSelector,
   state => state.paginator
 )
+export const ownerSelector = createSelector(
+  stateSelector,
+  state => state.currentOwner
+)
+export const repoSelector = createSelector(
+  stateSelector,
+  state => state.currentRepo
+)
+export const currentQuerySelector = createSelector(
+  ownerSelector,
+  repoSelector,
+  (owner, repo) => (!owner && !repo ? '' : `${owner}/${repo}`)
+)
+
 //AC
 
 export const redirectToIssues = (owner, repo, perPage = 30, page = 1) => ({
@@ -87,7 +105,9 @@ export function* fetchIssuesSaga(action) {
     const paginator = new Paginator(req.headers.link)
     yield put({
       type: FETCH_ISSUES_SUCCESS,
-      issues: List(req.data),
+      issues: req.data,
+      owner,
+      repo,
       paginator: {
         hasPages: paginator.hasPages(),
         maxPage: paginator.maxPage(),

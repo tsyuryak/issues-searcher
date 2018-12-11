@@ -10,7 +10,7 @@ function IssuesPage({ match, locationKey, paginator }) {
   const { owner, repo, perpage, page } = match.params
   return (
     <div className={styles['container']}>
-      <SearchField />
+      <SearchField query={{ owner, repo }} key={locationKey} />
       <div className={styles['issues']}>
         <Issues
           key={locationKey}

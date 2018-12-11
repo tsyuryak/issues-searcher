@@ -4,14 +4,20 @@ import ValidInput from './valid-input'
 import DropdownList from './dropdown-list'
 import styles from './styles/search-field.module.css'
 import { redirectToIssues } from '../../ducks/issues'
-import { fetchRepos, reposSelector, loadedSelector } from '../../ducks/repos'
+import {
+  fetchReposByOwner,
+  reposSelector,
+  loadedSelector,
+} from '../../ducks/repos'
 import { getItems, getSplitter } from './func/search-field-func'
 
 class SearchField extends Component {
   state = {
-    inputText: '',
-    errorMessage: '',
-    dropdown: false,
+    queryText: !!this.props.query
+      ? `${this.props.query.owner}/${this.props.query.repo}`
+      : '',
+    hasError: false,
+    dropdownReady: false,
     owner: '',
   }
 
@@ -23,36 +29,38 @@ class SearchField extends Component {
     window.removeEventListener('click', this.setDropdownFalse)
   }
 
-  setDropdownFalse = () => this.setState({ dropdown: false })
+  setDropdownFalse = () => this.setState({ dropdownReady: false })
 
   handleSubmit = e => {
     e.preventDefault()
-    const data = this.getData(this.state.inputText)
-    if (data) {
-      this.setState({ errorMessage: '', dropdown: false })
-      this.props.redirectToIssues(data.owner, data.repo)
+    const queryItems = this.parseQuery(this.state.queryText)
+    if (queryItems && queryItems.owner && queryItems.repo) {
+      this.props.redirectToIssues(queryItems.owner, queryItems.repo)
     } else {
-      this.setState({ errorMessage: `wrong request: ${this.state.inputText}` })
+      this.setState({
+        queryText: `wrong request: ${this.state.queryText}`,
+        hasError: true,
+      })
     }
   }
 
-  setText = text => {
-    this.setState({ inputText: text })
+  setQueryText = text => {
+    this.setState({ queryText: text, hasError: false })
   }
 
   onKeyPressHandler = keyCode => {
     //key codes 32-" ", 111,191 - "/"
     if ([32, 111, 191].includes(keyCode)) {
-      const last = this.state.inputText.slice(-1)
-      const owner = this.state.inputText.split(last)[0].trim()
+      const last = this.state.queryText.slice(-1)
+      const owner = this.state.queryText.split(last)[0].trim()
       if (owner) {
-        this.props.fetchRepos(owner)
-        this.setState({ dropdown: true, owner })
+        this.props.fetchReposByOwner(owner)
+        this.setState({ dropdownReady: true, owner })
       }
     }
   }
 
-  getData = string => {
+  parseQuery = string => {
     try {
       const splitter1 = /\s*\/{1,}\s*/
       const splitter2 = /\s+/
@@ -70,13 +78,13 @@ class SearchField extends Component {
   onClickHandler = repo => {
     const { owner } = this.state
     this.props.redirectToIssues(owner, repo)
-    this.setState({ inputText: `${owner}/${repo}` })
+    this.setState({ inputText: this.props.currentQuery })
   }
 
   render() {
     const events = {
       onKeyPressHandler: this.onKeyPressHandler,
-      onInputText: this.setText,
+      onInputText: this.setQueryText,
     }
     return (
       <div className={styles['search-field']}>
@@ -85,10 +93,10 @@ class SearchField extends Component {
             <li>
               <ValidInput
                 events={events}
-                error={this.state.errorMessage}
-                value={this.state.inputText}
+                error={this.state.hasError}
+                value={this.state.queryText}
               />
-              {this.state.dropdown && this.props.repoLoaded && (
+              {this.state.dropdownReady && this.props.repoLoaded && (
                 <DropdownList
                   className={styles['repo-list']}
                   repos={this.props.repos}
@@ -97,7 +105,7 @@ class SearchField extends Component {
               )}
             </li>
             <li>
-              <input type="submit" disabled={!this.state.inputText.trim()} />
+              <input type="submit" disabled={!this.state.queryText.trim()} />
             </li>
           </ul>
         </form>
@@ -111,5 +119,5 @@ export default connect(
     repoLoaded: loadedSelector(state),
     repos: reposSelector(state),
   }),
-  { redirectToIssues, fetchRepos }
+  { redirectToIssues, fetchReposByOwner }
 )(SearchField)

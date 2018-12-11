@@ -47,7 +47,7 @@ export const loadedSelector = createSelector(
 )
 
 //AC
-export const fetchRepos = owner => ({
+export const fetchReposByOwner = owner => ({
   type: FETCH_REPOS_REQUEST,
   owner,
 })

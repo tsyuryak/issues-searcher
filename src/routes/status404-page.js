@@ -1,7 +1,7 @@
 import React from 'react'
 import SearchField from '../components/search-field'
 
-function Status404() {
+function Status404({ match }) {
   return (
     <div>
       <SearchField />
