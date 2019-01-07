@@ -1,9 +1,9 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
-import IssuesPage from './routes/issues-page'
-import SingleIssuePage from './routes/single-issue-page'
-import Status404 from './routes/status404-page'
-import HomePage from './routes/home-page'
+import IssuesPage from './pages/issues-page'
+import SingleIssuePage from './pages/single-issue-page'
+import Status404 from './pages/status404-page'
+import HomePage from './pages/home-page'
 import styles from './styles/app.module.css'
 
 function App() {

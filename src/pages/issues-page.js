@@ -3,10 +3,9 @@ import Issues from '../components/issues/issues-list'
 import { connect } from 'react-redux'
 import Paginator from '../components/issues/issues-paginator'
 import SearchField from '../components/search-field'
-import { paginatorSelector } from '../ducks/issues'
 import styles from './styles/issues-page.module.css'
 
-function IssuesPage({ match, locationKey, paginator }) {
+function IssuesPage({ match, locationKey }) {
   const { owner, repo, perpage, page } = match.params
   return (
     <div className={styles['container']}>
@@ -20,12 +19,16 @@ function IssuesPage({ match, locationKey, paginator }) {
           page={page}
         />
       </div>
-      {paginator.hasPages && <Paginator owner={owner} repo={repo} />}
+      <Paginator
+        owner={owner}
+        repo={repo}
+        currentPage={page}
+        perPage={perpage}
+      />
     </div>
   )
 }
 
 export default connect(state => ({
   locationKey: state.router.location.key,
-  paginator: paginatorSelector(state),
 }))(IssuesPage)
