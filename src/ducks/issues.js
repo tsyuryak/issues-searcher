@@ -3,7 +3,7 @@ import { Record, List } from 'immutable'
 import { takeLatest, call, put } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { createSelector } from 'reselect'
-import Paginator from './func/paginator'
+import { getLastPage } from './util/paginator/parser'
 
 export const moduleName = 'issues'
 const prefix = `${appName}/${moduleName}`
@@ -15,14 +15,12 @@ export const FETCH_ISSUES_SUCCESS = `${prefix}/FETCH_ISSUES_SUCCESS`
 export const ReducerRecord = Record({
   loading: false,
   loaded: false,
-  paginator: {},
   issues: List([]),
-  currentOwner: null,
-  currentRepo: null,
+  lastPage: 0,
 })
 
 export default function reducer(state = ReducerRecord(), action) {
-  const { issues, owner, repo, paginator } = action
+  const { issues, lastPage } = action
   switch (action.type) {
     case FETCH_ISSUES_REQUEST:
       return state.set('loading', true).set('loaded', false)
@@ -31,9 +29,7 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('loading', false)
         .set('loaded', true)
         .set('issues', issues)
-        .set('paginator', paginator)
-        .set('currentOwner', owner)
-        .set('currentRepo', repo)
+        .set('lastPage', lastPage)
     default:
       return state
   }
@@ -54,10 +50,6 @@ export const loadedSelector = createSelector(
   stateSelector,
   state => state.loaded
 )
-export const paginatorSelector = createSelector(
-  stateSelector,
-  state => state.paginator
-)
 export const ownerSelector = createSelector(
   stateSelector,
   state => state.currentOwner
@@ -65,6 +57,14 @@ export const ownerSelector = createSelector(
 export const repoSelector = createSelector(
   stateSelector,
   state => state.currentRepo
+)
+export const lastPageSelector = createSelector(
+  stateSelector,
+  state => state.lastPage
+)
+export const currentPageSelector = createSelector(
+  stateSelector,
+  state => state.currentPage
 )
 export const currentQuerySelector = createSelector(
   ownerSelector,
@@ -97,24 +97,14 @@ export function* fetchIssuesSaga(action) {
   const reqUrl = `repos/${owner}/${repo}/issues?per_page=${perPage}&page=${page}`
   try {
     const req = yield call([axiosInst, axiosInst.get], reqUrl)
-
+    const lastPage = getLastPage(req.headers.link)
     if (req.data.length === 0) {
       throw Error()
     }
-
-    const paginator = new Paginator(req.headers.link)
     yield put({
       type: FETCH_ISSUES_SUCCESS,
       issues: req.data,
-      owner,
-      repo,
-      paginator: {
-        hasPages: paginator.hasPages(),
-        maxPage: paginator.maxPage(),
-        perPage,
-        page,
-        url: `/issues/${owner}/${repo}`,
-      },
+      lastPage,
     })
   } catch (error) {
     yield put(push('/404'))
