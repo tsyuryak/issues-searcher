@@ -5,6 +5,9 @@ import singleIssueReducer, {
   moduleName as singleIssueModule,
 } from '../ducks/single-issue'
 import reposReducer, { moduleName as reposModule } from '../ducks/repos'
+import paginatorReducer, {
+  moduleName as paginatorModule,
+} from '../ducks/paginator'
 
 export default history =>
   combineReducers({
@@ -12,4 +15,5 @@ export default history =>
     [issuesModule]: issuesReducer,
     [singleIssueModule]: singleIssueReducer,
     [reposModule]: reposReducer,
+    [paginatorModule]: paginatorReducer,
   })
