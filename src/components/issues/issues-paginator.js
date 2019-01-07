@@ -1,70 +1,103 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { paginatorSelector, redirectToIssues } from '../../ducks/issues'
-import { loadedSelector as issuesLoaded } from '../../ducks/issues'
+import { lastPageSelector, redirectToIssues } from '../../ducks/issues'
+import {
+  createViews,
+  viewsSelector,
+  currentViewNumberSelector,
+  currentViewSelector,
+} from '../../ducks/paginator'
 import { NavLink } from 'react-router-dom'
 import { generateId } from '../../helpers'
 import styles from './styles/issues-paginator.module.css'
 
-function IssuesPaginator({
-  redirectToIssues,
-  paginator,
-  owner,
-  repo,
-  issuesLoaded,
-}) {
-  const { maxPage, url, perPage } = paginator
-
-  const changeItemsNum = e => {
-    const pageNum = +e.target.value
-    const startPage = 1
-    redirectToIssues(owner, repo, pageNum, startPage)
+class IssuesPaginator extends Component {
+  static defaultProps = {
+    currentView: [],
+    lastPage: 0,
+    limitItems: 8,
   }
 
-  if (!issuesLoaded) {
-    return null
+  componentDidUpdate() {
+    const { lastPage, createViews, limitItems } = this.props
+    createViews(limitItems, lastPage)
   }
 
-  /* <select onChange={e => changeItemsNum(e)} value={+perPage}>
-        {[10, 30, 50, 70, 100].map(item => (
-          <option key={generateId()} value={item}>
-            {item}
-          </option>
-        ))}
-      </select>*/
+  changePage = (direction, max) => {
+    const { owner, repo, perPage, currentPage, redirectToIssues } = this.props
 
-  return (
-    <div className={styles['container']}>
-      <ul className={styles['page-list']}>
-        <li>
-          <a>
-            <span className="prev-icon">Prev</span>
-          </a>
-        </li>
-        {[...Array(maxPage).keys()].map(i => (
-          <li key={generateId()}>
-            <NavLink
-              activeClassName={styles['active']}
-              to={`${url}/${perPage}/${i + 1}`}
-            >
-              {i + 1}
-            </NavLink>
-          </li>
-        ))}
-        <li>
-          <a className="disabled">
-            <span className="next-icon">Next</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  )
+    const isNextPageNotExists =
+      direction(+currentPage) < 1 || direction(+currentPage) > max
+    if (isNextPageNotExists) return
+    const nextPage = direction(+currentPage)
+    redirectToIssues(owner, repo, perPage, nextPage)
+  }
+
+  showNext = () => {
+    if (false) {
+      return null
+    }
+    return (
+      <li>
+        <div
+          className={styles['pbutton']}
+          onClick={() => this.changePage(x => x + 1, this.props.lastPage)}
+        >
+          <span className={styles['next-icon']}>Next</span>
+        </div>
+      </li>
+    )
+  }
+
+  showPrev = () => {
+    if (false) {
+      return null
+    }
+    return (
+      <li>
+        <div
+          className={styles['pbutton']}
+          onClick={() => this.changePage(x => x - 1, this.props.lastPage)}
+        >
+          <span className={styles['prev-icon']}>Prev</span>
+        </div>
+      </li>
+    )
+  }
+
+  render() {
+    const { lastPage, owner, repo, perPage, currentView } = this.props
+
+    if (!lastPage) {
+      return <div className={styles['container']}>Loading...</div>
+    }
+
+    const url = `issues/${owner}/${repo}/${perPage}`
+
+    return (
+      <div className={styles['container']}>
+        <ul className={styles['page-list']}>
+          {this.showPrev()}
+          {currentView.map(i => (
+            <li key={generateId()}>
+              <NavLink activeClassName={styles['active']} to={`/${url}/${i}`}>
+                {i}
+              </NavLink>
+            </li>
+          ))}
+          {this.showNext()}
+        </ul>
+      </div>
+    )
+  }
 }
 
 export default connect(
   state => ({
-    paginator: paginatorSelector(state),
-    issuesLoaded: issuesLoaded(state),
+    lastPage: lastPageSelector(state),
+    views: viewsSelector(state),
+    viewNumberSelector: currentViewNumberSelector(state),
+    currentView: currentViewSelector(state),
   }),
-  { redirectToIssues }
+  { createViews, redirectToIssues }
 )(IssuesPaginator)
