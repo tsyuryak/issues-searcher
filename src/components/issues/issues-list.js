@@ -20,7 +20,6 @@ class Issues extends Component {
     const { loading, issues } = this.props
 
     if (loading || false) {
-      console.log('object')
       return <Loader />
     }
 
