@@ -26,15 +26,19 @@
   margin-right: 0;
 }
 
-.container a {
-  text-decoration: none;
+
+.container a, .container .pbutton {
   font-size: 15px;
   padding: 15px;
   color: rgb(180, 172, 216);
   border: 1px solid white;
   background-color: rgb(21, 4, 173);
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 5px; 
+}
+
+.container a {
+  text-decoration: none;
 }
 
 .container a.active, .container a.active:hover {
@@ -43,9 +47,13 @@
   cursor: default;
 }
 
-.container a:hover {
+.container a:hover, .container .pbutton:hover {
   box-shadow: 0 0 5px 3px white;
   color: white;
+}
+
+.container .pbutton:hover {
+  cursor: pointer;
 }
 
 .container a.disabled {
