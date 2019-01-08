@@ -8,7 +8,7 @@ import {
 import IssuesListItem from './issues-list-item'
 import { redirectToIssue } from '../../ducks/single-issue'
 import styles from './styles/issues-list.module.css'
-import Loader from '../common/loader'
+import Loader from '../loader'
 
 class Issues extends Component {
   constructor(props) {

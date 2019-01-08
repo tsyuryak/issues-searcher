@@ -8,7 +8,7 @@ import {
   userSelector,
 } from '../../ducks/single-issue'
 import history from '../../history'
-import Loader from '../common/loader'
+import Loader from '../loader/'
 import styles from './styles/single-issue.module.css'
 
 class SingleIssue extends Component {
