@@ -35,6 +35,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@storybook/addon-console": "^1.1.0",
     "@storybook/react": "^4.1.4",
     "babel-loader": "^8.0.5",
     "eslint-config-prettier": "^3.3.0",
@@ -43,6 +44,7 @@
     "lint-staged": "^8.0.5",
     "prettier": "^1.15.2",
     "react-test-renderer": "^16.6.3",
-    "redux-devtools-extension": "^2.13.5"
+    "redux-devtools-extension": "^2.13.5",
+    "require-context.macro": "^1.0.4"
   }
 }
