@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-function PageLink({ url, text, goToPage }) {
+function PageLink({ url, text, goToPage, className }) {
   return (
-    <a href={url} onClick={e => goToPage(e, url)}>
-      {text}
-    </a>
+    <div className={className}>
+      <a href={url} onClick={e => goToPage(e, url)}>
+        {text}
+      </a>
+    </div>
   )
 }
 

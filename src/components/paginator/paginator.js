@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageLink from './page-link'
+import styles from './styles/paginator.module.css'
 
 class Paginator extends Component {
   getLinksInfo = () => {
@@ -40,7 +41,12 @@ class Paginator extends Component {
 
     const url = `${baseUrl}/${activePage + 1}`
     return activePage < maxLimit ? (
-      <PageLink url={url} text={nextLinkText} goToPage={this.goToPage} />
+      <PageLink
+        className={styles['pbutton']}
+        url={url}
+        text={nextLinkText}
+        goToPage={this.goToPage}
+      />
     ) : null
   }
 
@@ -48,7 +54,12 @@ class Paginator extends Component {
     const { baseUrl, activePage, prevLinkText } = this.props.params
     const url = `${baseUrl}/${activePage - 1}`
     return activePage > 1 ? (
-      <PageLink url={url} text={prevLinkText} goToPage={this.goToPage} />
+      <PageLink
+        className={styles['pbutton']}
+        url={url}
+        text={prevLinkText}
+        goToPage={this.goToPage}
+      />
     ) : null
   }
 
@@ -56,7 +67,12 @@ class Paginator extends Component {
     const { baseUrl, activePage, firstLinkText } = this.props.params
     const url = `${baseUrl}/1`
     return activePage > 1 ? (
-      <PageLink url={url} text={firstLinkText} goToPage={this.goToPage} />
+      <PageLink
+        className={styles['pbutton']}
+        url={url}
+        text={firstLinkText}
+        goToPage={this.goToPage}
+      />
     ) : null
   }
 
@@ -64,16 +80,28 @@ class Paginator extends Component {
     const { baseUrl, activePage, lastLinkText, maxLimit } = this.props.params
     const url = `${baseUrl}/${maxLimit}`
     return activePage < maxLimit ? (
-      <PageLink url={url} text={lastLinkText} goToPage={this.goToPage} />
+      <PageLink
+        className={styles['pbutton']}
+        url={url}
+        text={lastLinkText}
+        goToPage={this.goToPage}
+      />
     ) : null
   }
 
   showLink = info => {
     const { activePage } = this.props.params
     return info.num !== activePage ? (
-      <PageLink url={info.url} text={info.num} goToPage={this.goToPage} />
+      <PageLink
+        className={styles['pbutton']}
+        url={info.url}
+        text={info.num}
+        goToPage={this.goToPage}
+      />
     ) : (
-      <span>{info.num}</span>
+      <div className={`${styles['pbutton']} ${styles['active']}`}>
+        {info.num}
+      </div>
     )
   }
 
