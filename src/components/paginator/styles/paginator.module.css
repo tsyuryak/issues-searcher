@@ -1,4 +1,4 @@
-ul {
+ul.container {
   display: flex;
   list-style-type: none;
   justify-content: center;
@@ -8,13 +8,13 @@ ul {
   border-radius: 0 0 5px 5px;
 }
 
-ul > li {
+ul.container > li {
   margin-left: 5px;
   display: flex;
   padding: 3px 0;
 }
 
-ul > li:last-child{
+ul.container > li:last-child{
   margin-right: 0;
 }
 

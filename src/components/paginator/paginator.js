@@ -110,7 +110,7 @@ class Paginator extends Component {
       return null
     }
     return (
-      <ul>
+      <ul className={styles['container']}>
         <li>{this.showFirst()}</li>
         <li>{this.showPrev()}</li>
         {this.state.linksInfo.map(info => (
