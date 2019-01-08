@@ -11,16 +11,18 @@ const prefix = `${appName}/${moduleName}`
 export const REDIRECT_TO_ISSUES = `${prefix}/REDIRECT_TO_ISSUES`
 export const FETCH_ISSUES_REQUEST = `${prefix}/FETCH_ISSUES_REQUEST`
 export const FETCH_ISSUES_SUCCESS = `${prefix}/FETCH_ISSUES_SUCCESS`
+export const GO_TO_PAGE = `${prefix}/GO_TO_PAGE`
 
 export const ReducerRecord = Record({
   loading: false,
   loaded: false,
   issues: List([]),
   lastPage: 0,
+  currentBaseUrl: '',
 })
 
 export default function reducer(state = ReducerRecord(), action) {
-  const { issues, lastPage } = action
+  const { issues, lastPage, currentBaseUrl } = action
   switch (action.type) {
     case FETCH_ISSUES_REQUEST:
       return state.set('loading', true).set('loaded', false)
@@ -30,6 +32,7 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('loaded', true)
         .set('issues', issues)
         .set('lastPage', lastPage)
+        .set('currentBaseUrl', currentBaseUrl)
     default:
       return state
   }
@@ -38,6 +41,10 @@ export default function reducer(state = ReducerRecord(), action) {
 //Selectors
 
 export const stateSelector = state => state[moduleName]
+export const currentBasuUrlSelector = createSelector(
+  stateSelector,
+  state => state.currentBaseUrl
+)
 export const issuesSelector = createSelector(
   stateSelector,
   state => state.issues
@@ -84,7 +91,17 @@ export const fetchIssues = (owner, repo, perPage, page) => ({
   payload: { owner, repo, page, perPage },
 })
 
+export const goToPage = url => ({
+  type: GO_TO_PAGE,
+  url,
+})
+
 //SAGAS
+
+export function* goToPageSaga(action) {
+  const { url } = action
+  yield put(push(url))
+}
 
 export function* redirectToIssuesSaga(action) {
   const { owner, repo, perPage, page } = action.payload
@@ -105,6 +122,7 @@ export function* fetchIssuesSaga(action) {
       type: FETCH_ISSUES_SUCCESS,
       issues: req.data,
       lastPage,
+      currentBaseUrl: `/issues/${owner}/${repo}/${perPage}`,
     })
   } catch (error) {
     yield put(push('/404'))
@@ -112,6 +130,7 @@ export function* fetchIssuesSaga(action) {
 }
 
 export function* saga() {
+  yield takeLatest(GO_TO_PAGE, goToPageSaga)
   yield takeLatest(REDIRECT_TO_ISSUES, redirectToIssuesSaga)
   yield takeLatest(FETCH_ISSUES_REQUEST, fetchIssuesSaga)
 }
