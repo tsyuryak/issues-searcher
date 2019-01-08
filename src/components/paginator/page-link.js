@@ -11,7 +11,7 @@ function PageLink({ url, text, goToPage }) {
 
 PageLink.propTypes = {
   url: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   goToPage: PropTypes.func.isRequired,
 }
 
