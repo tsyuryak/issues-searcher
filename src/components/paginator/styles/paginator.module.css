@@ -36,6 +36,7 @@ a {
   box-shadow: 0 0 10px 4px yellow;
   color: rgb(216, 216, 113);
   cursor: default;
+  font-weight: bold;
 }
 
 .pbutton:hover {
