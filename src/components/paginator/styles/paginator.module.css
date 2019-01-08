@@ -1,0 +1,50 @@
+ul {
+  display: flex;
+  list-style-type: none;
+  justify-content: center;
+  align-items: center;
+  background-color:  rgb(21, 4, 173); 
+  flex-direction: row;
+  border-radius: 0 0 5px 5px;
+}
+
+ul > li {
+  margin-left: 5px;
+  display: flex;
+  padding: 3px 0;
+}
+
+ul > li:last-child{
+  margin-right: 0;
+}
+
+.pbutton {
+  font-size: 15px;
+  padding: 15px;
+  border: 1px solid white;
+  background-color: rgb(21, 4, 173);
+  border-radius: 5px; 
+}
+
+a {
+  text-decoration: none;
+  color: rgb(180, 172, 216);
+  font-weight: bold;
+}
+
+.pbutton.active, .pbutton.active:hover {
+  box-shadow: 0 0 10px 4px yellow;
+  color: rgb(216, 216, 113);
+  cursor: default;
+}
+
+.pbutton:hover {
+  box-shadow: 0 0 5px 3px white;
+  cursor: pointer;
+}
+
+.pbutton:hover a{
+  color: white;
+}
+
+
