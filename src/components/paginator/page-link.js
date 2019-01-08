@@ -3,10 +3,8 @@ import PropTypes from 'prop-types'
 
 function PageLink({ url, text, goToPage, className }) {
   return (
-    <div className={className}>
-      <a href={url} onClick={e => goToPage(e, url)}>
-        {text}
-      </a>
+    <div className={className} onClick={e => goToPage(e, url)}>
+      <a href={url}>{text}</a>
     </div>
   )
 }
