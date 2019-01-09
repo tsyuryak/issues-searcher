@@ -10,6 +10,7 @@ function DropdownList({
   onGoToRepo,
   activeItem,
   resetActiveItem,
+  setActiveItem,
 }) {
   const filteredList = repoes.filter(r => r.name.includes(typedValue))
   if (!visible || filteredList.length === 0) {
@@ -22,6 +23,7 @@ function DropdownList({
           key={r.id}
           className={activeItem === i ? styles['active'] : null}
           onClick={() => onGoToRepo(owner, r.name)}
+          onMouseEnter={() => setActiveItem(i)}
         >
           {r.name}
         </li>
@@ -43,6 +45,7 @@ DropdownList.propTypes = {
   onGoToRepo: PropTypes.func.isRequired,
   activeItem: PropTypes.number.isRequired,
   resetActiveItem: PropTypes.func.isRequired,
+  setActiveItem: PropTypes.func.isRequired,
 }
 
 export default DropdownList
