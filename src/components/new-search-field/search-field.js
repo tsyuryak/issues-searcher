@@ -45,7 +45,7 @@ export class SearchField extends Component {
     this.setState({ dropdownIsVisible: dropdownReady })
   }
 
-  setDropdwnInvisible = () => {
+  setDropdownInvisible = () => {
     this.setState({ dropdownIsVisible: false })
   }
 
@@ -64,11 +64,11 @@ export class SearchField extends Component {
 
   componentWillMount = () => {
     this.toggleDropdownVisibility()
-    //window.addEventListener('click', this.setDropdwnInvisible)
+    //window.addEventListener('click', this.setDropdownInvisible)
   }
 
   componentWillUnmount = () => {
-    //window.removeEventListener('click', this.setDropdwnInvisible)
+    //window.removeEventListener('click', this.setDropdownInvisible)
   }
 
   render() {
