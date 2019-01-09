@@ -9,6 +9,7 @@ export class SearchField extends Component {
     inputText: this.props.owner,
     dropdownIsVisible: false,
     activeItem: -1,
+    repoListLength: 0,
   }
 
   setInputText = e => {
