@@ -22,7 +22,7 @@ export const params1 = {
   loading: false,
   loaded: false,
   owner: '',
-  repoes: createDropDownList(10),
+  repoes: [],
 }
 
 storiesOf('Search Field', module)
@@ -31,5 +31,11 @@ storiesOf('Search Field', module)
     <SearchField {...actions} {...params1} loading={true} owner={'owner'} />
   ))
   .add('repo loaded', () => (
-    <SearchField {...actions} {...params1} loading={false} owner={'owner'} />
+    <SearchField
+      {...actions}
+      {...params1}
+      loading={false}
+      owner={'owner'}
+      repoes={createDropDownList(10)}
+    />
   ))
