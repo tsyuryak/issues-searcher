@@ -8,7 +8,7 @@ export class SearchField extends Component {
   state = {
     inputText: this.props.owner,
     dropdownIsVisible: false,
-    typedTxt: '',
+    activeItem: -1,
   }
 
   setInputText = e => {
@@ -49,6 +49,19 @@ export class SearchField extends Component {
     this.setState({ dropdownIsVisible: false })
   }
 
+  handleKeyDown = e => {
+    console.log(e.keyCode)
+    if (e.keyCode === 40) {
+      this.setState({ activeItem: this.state.activeItem + 1 })
+    } else if (e.keyCode === 38) {
+      this.setState({ activeItem: this.state.activeItem - 1 })
+    }
+  }
+
+  resetActiveItem = () => {
+    this.setState({ activeItem: -1 })
+  }
+
   componentWillMount = () => {
     this.toggleDropdownVisibility()
     //window.addEventListener('click', this.setDropdwnInvisible)
@@ -71,6 +84,7 @@ export class SearchField extends Component {
                   type="search"
                   onChange={e => this.setInputText(e)}
                   value={this.state.inputText}
+                  onKeyDown={e => this.handleKeyDown(e)}
                 />
                 <DropdownList
                   owner={owner}
@@ -78,6 +92,8 @@ export class SearchField extends Component {
                   repoes={repoes}
                   typedValue={getTextAfterOwner(this.state.inputText, owner)}
                   onGoToRepo={onGotoRepo}
+                  activeItem={this.state.activeItem}
+                  resetActiveItem={this.resetActiveItem}
                 />
               </div>
             </li>
