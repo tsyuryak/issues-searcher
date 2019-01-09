@@ -1,0 +1,32 @@
+ul.repo-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  align-items: stretch;
+  position: absolute;
+  justify-content: start;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.356);
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  margin-top: 4px;
+  box-shadow: 0 0 15px 1px rgb(1, 31, 7);
+  visibility: visible;
+}
+
+ul.repo-list li {
+  padding: 5px;
+  color: #fff;
+  border-bottom: 1px solid rgb(31, 30, 30);
+}
+
+ul.repo-list li:last-child {
+  border: none;
+}
+
+ul.repo-list li:hover {
+  background-color: rgba(4, 173, 69, .7);
+  cursor: pointer;
+}
