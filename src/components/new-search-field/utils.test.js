@@ -1,4 +1,4 @@
-import { getOwnerFromQuery, queryItemIsValid } from './utils'
+import { getOwnerFromQuery, queryItemIsValid, getTextAfterOwner } from './utils'
 
 describe('has separator', () => {
   test('has owner if separator is /', () => {
@@ -23,4 +23,16 @@ test('valid item', () => {
 
 test('1nvalid item', () => {
   expect(queryItemIsValid('1nvalid')).toBeFalsy()
+})
+
+test('text after owner with space separator', () => {
+  const owner = 'owner'
+  const testString = 'owner xxxxx'
+  expect(getTextAfterOwner(testString, owner)).toBe('xxxxx')
+})
+
+test('text after owner with / separator', () => {
+  const owner = 'owner'
+  const testString = 'owner/ xxxxx'
+  expect(getTextAfterOwner(testString, owner)).toBe('xxxxx')
 })

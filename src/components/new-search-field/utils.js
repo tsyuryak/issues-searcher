@@ -14,4 +14,7 @@ export const getOwnerFromQuery = query => {
   return owner
 }
 
-export const getOwnerAndRepoByQuery = query => {}
+export const getTextAfterOwner = (string, separator) => {
+  const res = string.replace(separator, '')
+  return res.replace(/(\s+|\/+)/, '').trim()
+}
