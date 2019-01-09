@@ -14,6 +14,8 @@ export const createDropDownList = itemsQuantity => {
   for (let i = 1; i <= itemsQuantity; i++) {
     arr.push({ id: i, name: `repo-${i}-***` })
   }
+
+  return arr
 }
 
 export const params1 = {
