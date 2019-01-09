@@ -1,0 +1,92 @@
+.search-field {
+  margin: 10px;
+}
+
+.search-field form {
+  width: 100%;
+}
+
+.search-field form ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  align-items: stretch;
+}
+
+
+.search-field form ul li input {
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  height: 100%;
+}
+
+.search-field form > ul > li {
+  flex-grow: 1;
+}
+
+.search-field form > ul > li:first-child {
+  position: relative;
+  margin-right: 10px;
+  flex-grow: 3;
+}
+
+.search-field form ul li input[type=search] {
+  border: 2px solid rgba(4, 173, 69);
+  line-height: 1.7;
+  cursor: text;
+  width: 100%;
+}
+
+.search-field form ul li input[type=submit] {
+  cursor: pointer;
+  width: 100%;
+  background-color: rgba(4, 173, 69);
+  color: #fff;
+  font-weight: 700;
+}
+
+.search-field form ul li input[type=submit]:active {
+  border: none;
+  box-shadow: inset 0 0 15px 5px rgb(1, 31, 7);
+  color: rgb(212, 212, 212);
+}
+
+.search-field form ul li input[type=submit]:hover {
+  cursor: pointer;
+}
+
+.search-field form ul li input[type=submit]:disabled {
+  background-color: rgb(155, 185, 167);
+  color: rgb(67, 82, 69);
+  cursor: default;
+}
+
+.search-field ul.repo-list {
+  position: absolute;
+  justify-content: start;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.356);
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  margin-top: 4px;
+  box-shadow: 0 0 15px 1px rgb(1, 31, 7);
+  visibility: visible;
+}
+
+.search-field ul.repo-list li {
+  padding: 5px;
+  color: #fff;
+  border-bottom: 1px solid rgb(31, 30, 30);
+}
+
+.search-field ul.repo-list li:last-child {
+  border: none;
+}
+
+.search-field ul.repo-list li:hover {
+  background-color: rgba(4, 173, 69, .7);
+  cursor: pointer;
+}
