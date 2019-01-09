@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { getOwnerFromQuery, getTextAfterOwner } from './utils'
 import PropTypes from 'prop-types'
 import styles from './search-field.module.css'
@@ -59,10 +60,6 @@ export class SearchField extends Component {
     }
   }
 
-  resetActiveItem = () => {
-    this.setState({ activeItem: -1 })
-  }
-
   setActiveItem = item => {
     this.setState({ activeItem: item })
   }
@@ -98,7 +95,7 @@ export class SearchField extends Component {
                   typedValue={getTextAfterOwner(this.state.inputText, owner)}
                   onGoToRepo={onGotoRepo}
                   activeItem={this.state.activeItem}
-                  resetActiveItem={this.resetActiveItem}
+                  resetActiveItem={this.setActiveItem(-1)}
                   setActiveItem={this.setActiveItem}
                 />
               </div>
@@ -130,4 +127,4 @@ SearchField.propTypes = {
   onGotoRepo: PropTypes.func.isRequired,
 }
 
-export default SearchField
+export default connect()(SearchField)
