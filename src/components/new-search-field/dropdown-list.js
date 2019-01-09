@@ -5,7 +5,13 @@ function DropdownList({ visible, repoes = [] }) {
   if (!visible) {
     return null
   }
-  return <ul>DDL</ul>
+  return (
+    <ul className="repo-list">
+      {repoes.map(r => (
+        <li key={r.id}>{r.name}</li>
+      ))}
+    </ul>
+  )
 }
 
 DropdownList.propTypes = {
