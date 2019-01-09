@@ -9,6 +9,12 @@ export const actions = {
   onSearchRepoes: action('onSearchRepoes'),
 }
 
-storiesOf('Search Field', module).add('default', () => (
-  <SearchField {...actions} />
-))
+export const params1 = {
+  loading: true,
+}
+
+storiesOf('Search Field', module)
+  .add('default', () => (
+    <SearchField {...actions} {...params1} loading={false} />
+  ))
+  .add('loading repo', () => <SearchField {...actions} {...params1} />)

@@ -25,7 +25,18 @@ export class SearchField extends Component {
     this.props.onSearchIssues(inputText)
   }
 
+  getSearchButtonState = () => {
+    const { loading } = this.props
+    const text = !loading ? 'Search' : 'Loading repo...'
+    const disabled = !this.state.inputText.trim()
+    return {
+      text,
+      disabled,
+    }
+  }
+
   render() {
+    const buttonState = this.getSearchButtonState()
     return (
       <div className={styles['search-field']}>
         <form onSubmit={e => this.onHandleSubmit(e)}>
@@ -34,7 +45,11 @@ export class SearchField extends Component {
               <input type="search" onChange={e => this.setInputText(e)} />
             </li>
             <li>
-              <input type="submit" disabled={!this.state.inputText} />
+              <input
+                type="submit"
+                disabled={buttonState.disabled}
+                value={buttonState.text}
+              />
             </li>
           </ul>
         </form>
