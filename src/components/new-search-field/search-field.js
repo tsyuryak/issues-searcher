@@ -111,6 +111,10 @@ export class SearchField extends Component {
   }
 }
 
+SearchField.defaultProps = {
+  owner: '',
+}
+
 SearchField.propTypes = {
   loading: PropTypes.bool.isRequired,
   loaded: PropTypes.bool.isRequired,
