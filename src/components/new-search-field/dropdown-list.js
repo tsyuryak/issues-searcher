@@ -11,11 +11,13 @@ function DropdownList({
   activeItem,
   resetActiveItem,
   setActiveItem,
+  setListLength,
 }) {
   const filteredList = repoes.filter(r => r.name.includes(typedValue))
   if (!visible || filteredList.length === 0) {
     return null
   }
+  setListLength(filteredList.length)
   return (
     <ul
       className={styles['repo-list']}
@@ -50,6 +52,7 @@ DropdownList.propTypes = {
   activeItem: PropTypes.number.isRequired,
   resetActiveItem: PropTypes.func.isRequired,
   setActiveItem: PropTypes.func.isRequired,
+  setListLength: PropTypes.func.isRequired,
 }
 
 export default DropdownList

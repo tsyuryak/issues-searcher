@@ -15,6 +15,7 @@ export const actions = {
   onGoToRepo: action('onGoToRepo'),
   resetActiveItem: action('resetActiveItem'),
   setActiveItem: action('setActiveItem'),
+  setListLength: action('setListLength'),
 }
 
 storiesOf('Search Field > dropdown', module)
