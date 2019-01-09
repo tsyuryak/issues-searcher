@@ -34,7 +34,7 @@ storiesOf('Search Field', module)
     <SearchField
       {...actions}
       {...params1}
-      loading={false}
+      loaded={true}
       owner={'owner'}
       repoes={createDropDownList(10)}
     />
