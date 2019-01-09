@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { getOwnerFromQuery } from './utils'
 import PropTypes from 'prop-types'
 import styles from './search-field.module.css'
+import DropdownList from './dropdown-list'
 
 export class SearchField extends Component {
   state = {
     inputText: this.props.owner,
+    dropdownIsVisible: false,
   }
 
   setInputText = e => {
@@ -36,18 +38,38 @@ export class SearchField extends Component {
     }
   }
 
+  toggleDropdownVisibility = () => {
+    const { repoes, loaded } = this.props
+    const dropdownReady = loaded && repoes.length > 0
+    this.setState({ dropdownIsVisible: dropdownReady })
+  }
+
+  componentWillMount = () => {
+    this.toggleDropdownVisibility()
+  }
+
   render() {
     const buttonState = this.getSearchButtonState()
+    const { owner, repoes } = this.props
     return (
       <div className={styles['search-field']}>
         <form onSubmit={e => this.onHandleSubmit(e)}>
           <ul>
             <li>
-              <input
-                type="search"
-                onChange={e => this.setInputText(e)}
-                value={this.state.inputText}
-              />
+              <div>
+                <input
+                  type="search"
+                  onChange={e => this.setInputText(e)}
+                  value={this.state.inputText}
+                />
+                <DropdownList
+                  owner={owner}
+                  visible={this.state.dropdownIsVisible}
+                  repoes={repoes}
+                  typedValue={''}
+                  onGoToRepo={(a, b) => console.log(`${a} ${b}`)}
+                />
+              </div>
             </li>
             <li>
               <input
