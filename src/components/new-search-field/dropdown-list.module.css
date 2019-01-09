@@ -26,7 +26,7 @@ ul.repo-list li:last-child {
   border: none;
 }
 
-ul.repo-list ul.repo-list li.active {
+ul.repo-list li.active {
   background-color: rgba(4, 173, 69, .7);
 }
 
