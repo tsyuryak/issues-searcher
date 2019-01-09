@@ -2,13 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './dropdown-list.module.css'
 
-function DropdownList({
-  visible,
-  repoes = [],
-  typedValue = '',
-  owner,
-  onGoToRepo,
-}) {
+function DropdownList({ visible, repoes, typedValue, owner, onGoToRepo }) {
   const filteredList = repoes.filter(r => r.name.includes(typedValue))
   if (!visible || filteredList.length === 0) {
     return null
@@ -22,6 +16,11 @@ function DropdownList({
       ))}
     </ul>
   )
+}
+
+DropdownList.defaultProps = {
+  repoes: [],
+  typedValue: '',
 }
 
 DropdownList.propTypes = {
