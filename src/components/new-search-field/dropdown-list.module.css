@@ -26,7 +26,10 @@ ul.repo-list li:last-child {
   border: none;
 }
 
-ul.repo-list li:hover {
+ul.repo-list li:hover, ul.repo-list li.active {
   background-color: rgba(4, 173, 69, .7);
+}
+
+ul.repo-list li:hover {
   cursor: pointer;
 }

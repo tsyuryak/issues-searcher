@@ -2,15 +2,26 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './dropdown-list.module.css'
 
-function DropdownList({ visible, repoes, typedValue, owner, onGoToRepo }) {
+function DropdownList({
+  visible,
+  repoes,
+  typedValue,
+  owner,
+  onGoToRepo,
+  activeItem,
+}) {
   const filteredList = repoes.filter(r => r.name.includes(typedValue))
   if (!visible || filteredList.length === 0) {
     return null
   }
   return (
     <ul className={styles['repo-list']}>
-      {filteredList.map(r => (
-        <li key={r.id} onClick={() => onGoToRepo(owner, r.name)}>
+      {filteredList.map((r, i) => (
+        <li
+          key={r.id}
+          className={activeItem === i ? styles['active'] : null}
+          onClick={() => onGoToRepo(owner, r.name)}
+        >
           {r.name}
         </li>
       ))}
@@ -29,6 +40,7 @@ DropdownList.propTypes = {
   typedValue: PropTypes.string,
   owner: PropTypes.string.isRequired,
   onGoToRepo: PropTypes.func.isRequired,
+  activeItem: PropTypes.number.isRequired,
 }
 
 export default DropdownList
