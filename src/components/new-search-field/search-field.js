@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { getOwnerFromQuery } from './utils'
+import PropTypes from 'prop-types'
 import styles from './search-field.module.css'
 
 export class SearchField extends Component {
@@ -60,6 +61,14 @@ export class SearchField extends Component {
       </div>
     )
   }
+}
+
+SearchField.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  loaded: PropTypes.bool.isRequired,
+  owner: PropTypes.string,
+  onSearchIssues: PropTypes.func.isRequired,
+  onSearchRepoes: PropTypes.func.isRequired,
 }
 
 export default SearchField
