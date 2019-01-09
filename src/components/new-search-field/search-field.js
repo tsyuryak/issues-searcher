@@ -50,11 +50,11 @@ export class SearchField extends Component {
 
   componentWillMount = () => {
     this.toggleDropdownVisibility()
-    window.addEventListener('click', this.setDropdwnInvisible)
+    //window.addEventListener('click', this.setDropdwnInvisible)
   }
 
   componentWillUnmount = () => {
-    window.addEventListener('click', this.setDropdwnInvisible)
+    //window.removeEventListener('click', this.setDropdwnInvisible)
   }
 
   render() {
