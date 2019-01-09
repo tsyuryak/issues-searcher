@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { getOwnerFromQuery } from './search-field.utils'
+import { getOwnerFromQuery } from './utils'
 import styles from './search-field.module.css'
 
 export class SearchField extends Component {
