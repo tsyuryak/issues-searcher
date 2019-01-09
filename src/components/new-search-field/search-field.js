@@ -4,7 +4,7 @@ import styles from './search-field.module.css'
 
 export class SearchField extends Component {
   state = {
-    inputText: '',
+    inputText: this.props.owner,
   }
 
   setInputText = e => {
@@ -28,7 +28,7 @@ export class SearchField extends Component {
   getSearchButtonState = () => {
     const { loading } = this.props
     const text = !loading ? 'Search' : 'Loading repo...'
-    const disabled = !this.state.inputText.trim()
+    const disabled = !this.state.inputText.trim() || loading
     return {
       text,
       disabled,
@@ -42,7 +42,11 @@ export class SearchField extends Component {
         <form onSubmit={e => this.onHandleSubmit(e)}>
           <ul>
             <li>
-              <input type="search" onChange={e => this.setInputText(e)} />
+              <input
+                type="search"
+                onChange={e => this.setInputText(e)}
+                value={this.state.inputText}
+              />
             </li>
             <li>
               <input
