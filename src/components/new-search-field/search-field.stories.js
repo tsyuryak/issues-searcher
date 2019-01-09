@@ -18,8 +18,8 @@ export const params1 = {
 storiesOf('Search Field', module)
   .add('default', () => <SearchField {...actions} {...params1} />)
   .add('loading repo', () => (
-    <SearchField {...actions} {...params1} loading={true} />
+    <SearchField {...actions} {...params1} loading={true} owner={'owner'} />
   ))
   .add('repo loaded', () => (
-    <SearchField {...actions} {...params1} loading={false} />
+    <SearchField {...actions} {...params1} loading={false} owner={'owner'} />
   ))
