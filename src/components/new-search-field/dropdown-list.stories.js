@@ -13,6 +13,7 @@ export const params1 = {
 
 export const actions = {
   onGoToRepo: action('onGoToRepo'),
+  resetActiveItem: action('resetActiveItem'),
 }
 
 storiesOf('Search Field > dropdown', module)
