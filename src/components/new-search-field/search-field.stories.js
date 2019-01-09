@@ -7,6 +7,7 @@ import SearchField from './search-field'
 export const actions = {
   onSearchIssues: action('onSearchIssues'),
   onSearchRepoes: action('onSearchRepoes'),
+  onGotoRepo: action('onSearchRepoes'),
 }
 
 export const createDropDownList = itemsQuantity => {
