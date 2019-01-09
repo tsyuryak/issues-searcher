@@ -10,11 +10,16 @@ export const actions = {
 }
 
 export const params1 = {
-  loading: true,
+  loading: false,
+  loaded: false,
+  owner: '',
 }
 
 storiesOf('Search Field', module)
-  .add('default', () => (
+  .add('default', () => <SearchField {...actions} {...params1} />)
+  .add('loading repo', () => (
+    <SearchField {...actions} {...params1} loading={true} />
+  ))
+  .add('repo loaded', () => (
     <SearchField {...actions} {...params1} loading={false} />
   ))
-  .add('loading repo', () => <SearchField {...actions} {...params1} />)
