@@ -59,7 +59,7 @@ export class SearchField extends Component {
 
   render() {
     const buttonState = this.getSearchButtonState()
-    const { owner, repoes } = this.props
+    const { owner, repoes, onGotoRepo } = this.props
     return (
       <div className={styles['search-field']}>
         <form onSubmit={e => this.onHandleSubmit(e)}>
@@ -76,7 +76,7 @@ export class SearchField extends Component {
                   visible={this.state.dropdownIsVisible}
                   repoes={repoes}
                   typedValue={''}
-                  onGoToRepo={(a, b) => console.log(`${a} ${b}`)}
+                  onGoToRepo={onGotoRepo}
                 />
               </div>
             </li>
@@ -100,6 +100,7 @@ SearchField.propTypes = {
   owner: PropTypes.string,
   onSearchIssues: PropTypes.func.isRequired,
   onSearchRepoes: PropTypes.func.isRequired,
+  onGotoRepo: PropTypes.func.isRequired,
 }
 
 export default SearchField
