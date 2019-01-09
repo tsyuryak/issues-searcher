@@ -9,10 +9,18 @@ export const actions = {
   onSearchRepoes: action('onSearchRepoes'),
 }
 
+export const createDropDownList = itemsQuantity => {
+  const arr = []
+  for (let i = 1; i <= itemsQuantity; i++) {
+    arr.push({ id: i, repo: `repo-${i}-***` })
+  }
+}
+
 export const params1 = {
   loading: false,
   loaded: false,
   owner: '',
+  repoes: createDropDownList(10),
 }
 
 storiesOf('Search Field', module)
