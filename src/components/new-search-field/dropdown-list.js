@@ -17,7 +17,11 @@ function DropdownList({
     return null
   }
   return (
-    <ul className={styles['repo-list']} onMouseEnter={() => resetActiveItem()}>
+    <ul
+      className={styles['repo-list']}
+      onMouseEnter={() => resetActiveItem()}
+      onMouseLeave={() => resetActiveItem()}
+    >
       {filteredList.map((r, i) => (
         <li
           key={r.id}
