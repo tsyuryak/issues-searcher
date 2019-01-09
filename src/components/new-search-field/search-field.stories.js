@@ -12,7 +12,7 @@ export const actions = {
 export const createDropDownList = itemsQuantity => {
   const arr = []
   for (let i = 1; i <= itemsQuantity; i++) {
-    arr.push({ id: i, repo: `repo-${i}-***` })
+    arr.push({ id: i, name: `repo-${i}-***` })
   }
 }
 
