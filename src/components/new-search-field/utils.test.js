@@ -1,4 +1,4 @@
-import { getOwnerFromQuery } from './utils'
+import { getOwnerFromQuery, queryItemIsValid } from './utils'
 
 describe('has separator', () => {
   test('has owner if separator is /', () => {
@@ -15,4 +15,12 @@ test('null if epmpty query', () => {
 
 test('null if first character not letter', () => {
   expect(getOwnerFromQuery('1owner')).toBeNull()
+})
+
+test('valid item', () => {
+  expect(queryItemIsValid('valid')).toBeTruthy()
+})
+
+test('1nvalid item', () => {
+  expect(queryItemIsValid('1nvalid')).toBeFalsy()
 })
