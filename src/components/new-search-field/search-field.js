@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { getOwnerFromQuery } from './utils'
+import { getOwnerFromQuery, getTextAfterOwner } from './utils'
 import PropTypes from 'prop-types'
 import styles from './search-field.module.css'
 import DropdownList from './dropdown-list'
@@ -8,6 +8,7 @@ export class SearchField extends Component {
   state = {
     inputText: this.props.owner,
     dropdownIsVisible: false,
+    typedTxt: '',
   }
 
   setInputText = e => {
@@ -75,7 +76,7 @@ export class SearchField extends Component {
                   owner={owner}
                   visible={this.state.dropdownIsVisible}
                   repoes={repoes}
-                  typedValue={''}
+                  typedValue={getTextAfterOwner(this.state.inputText, owner)}
                   onGoToRepo={onGotoRepo}
                 />
               </div>
