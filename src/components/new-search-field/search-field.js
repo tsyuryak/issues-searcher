@@ -63,6 +63,10 @@ export class SearchField extends Component {
     this.setState({ activeItem: -1 })
   }
 
+  setActiveItem = item => {
+    this.setState({ activeItem: item })
+  }
+
   componentWillMount = () => {
     this.toggleDropdownVisibility()
     //window.addEventListener('click', this.setDropdownInvisible)
@@ -95,6 +99,7 @@ export class SearchField extends Component {
                   onGoToRepo={onGotoRepo}
                   activeItem={this.state.activeItem}
                   resetActiveItem={this.resetActiveItem}
+                  setActiveItem={this.setActiveItem}
                 />
               </div>
             </li>
