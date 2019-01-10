@@ -17,13 +17,19 @@ class DropdownList extends Component {
   constructor(props) {
     super(props)
     if (process.env.STORYBOOK_MODE) {
-      const { setTestValues, test } = props
-      setTestValues(test)
+      const { setTestValues, testState } = props
+      setTestValues({
+        visible: testState.visible,
+        activeItem: testState.activeItem,
+        owner: testState.owner,
+        repoes: testState.repoes,
+        typedValue: testState.typedValue,
+      })
     }
   }
 
   resetActiveItem = () => {
-    setActiveItem(-1)
+    this.props.setActiveItem(-1)
   }
 
   render() {
@@ -82,6 +88,7 @@ export default connect(
     owner: ownerSelector(state),
     activeItem: activeItemSelector(state),
     filteredList: filteredRepoSelector(state),
+    testState: state,
   }),
   { setActiveItem, setTestValues }
 )(DropdownList)
