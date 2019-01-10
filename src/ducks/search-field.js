@@ -10,10 +10,12 @@ export const SEARCH_ISSUES = `${prefix}/SEARCH_ISSUES`
 export const SEARCH_REPOES = `${prefix}/SEARCH_REPOES`
 export const GO_TO_REPO = `${prefix}/GO_TO_REPO`
 export const SET_ACTIVE_ITEM = `${prefix}/SET_ACTIVE_ITEM`
+export const SET_INPUT_TEXT = `${prefix}/SET_INPUT_TEXT`
 
 export const ReducerRecord = Record({
   loading: false,
   visible: false,
+  text: '',
   owner: '',
   repoes: [],
   typedValue: '',
@@ -29,6 +31,8 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('repoes', action.values.repoes)
         .set('activeItem', action.values.activeItem)
         .set('typedValue', action.values.typedValue)
+    case SET_INPUT_TEXT:
+      return state.set('text', action.text)
     case SET_ACTIVE_ITEM:
       return state.set('activeItem', action.item)
     default:
@@ -64,6 +68,11 @@ export const loadedSelector = createSelector(
   repoes => repoes.length > 0
 )
 
+export const inputTextSelector = createSelector(
+  stateSelector,
+  state => state.text
+)
+
 export const typedValueSelector = createSelector(
   stateSelector,
   state => state.typedValue
@@ -91,6 +100,11 @@ export const setTestValues = values => ({
 export const setActiveItem = item => ({
   type: SET_ACTIVE_ITEM,
   item,
+})
+
+export const setInputText = text => ({
+  type: SET_INPUT_TEXT,
+  text,
 })
 /* 
   onSearchIssues: PropTypes.func.isRequired,
