@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import {
   activeItemSelector,
   visibleSelector,
+  loadedSelector,
   repoesSelector,
   typedValueSelector,
   ownerSelector,
@@ -39,10 +40,11 @@ class DropdownList extends Component {
       activeItem,
       onGoToRepo,
       visible,
+      loaded,
       owner,
     } = this.props
 
-    if (!visible || filteredList.length === 0) {
+    if (!visible || !loaded) {
       return null
     }
 
@@ -69,6 +71,7 @@ class DropdownList extends Component {
 
 DropdownList.propTypes = {
   visible: PropTypes.bool.isRequired,
+  loaded: PropTypes.bool.isRequired,
   repoes: PropTypes.array.isRequired,
   filteredList: PropTypes.array.isRequired,
   typedValue: PropTypes.string,
@@ -77,11 +80,11 @@ DropdownList.propTypes = {
   onGoToRepo: PropTypes.func.isRequired,
   resetActiveItem: PropTypes.func.isRequired,
   setActiveItem: PropTypes.func.isRequired,
-  setListLength: PropTypes.func.isRequired,
 }
 
 export default connect(
   state => ({
+    loaded: loadedSelector(state),
     visible: visibleSelector(state),
     repoes: repoesSelector(state),
     typedValue: typedValueSelector(state),
