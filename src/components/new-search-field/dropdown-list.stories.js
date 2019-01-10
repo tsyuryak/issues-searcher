@@ -11,7 +11,6 @@ export const actions = {
   setActiveItem: action('setActiveItem'),
   setListLength: action('setListLength'),
 }
-
 const initialState = {
   loading: false,
   loaded: false,
@@ -25,7 +24,7 @@ const initialState = {
 const cannedActions = [{ name: 'Demo Action', action: { type: 'test' } }]
 
 storiesOf('Search Field/Dropdown', module)
-  .addDecorator(withRedux({}, []))
+  .addDecorator(withRedux(initialState, []))
   .add('invisible', () => <DropdownList />)
 
 storiesOf('Search Field/Dropdown', module)
@@ -71,3 +70,18 @@ storiesOf('Search Field/Dropdown', module)
     )
   )
   .add('repo list - active item #5', () => <DropdownList />)
+
+storiesOf('Search Field/Dropdown', module)
+  .addDecorator(
+    withRedux(
+      {
+        ...initialState,
+        repoes: createDropDownList(22),
+        owner: 'owner',
+        visible: true,
+        typedValue: '2',
+      },
+      []
+    )
+  )
+  .add('repo list - filter by 8', () => <DropdownList />)
