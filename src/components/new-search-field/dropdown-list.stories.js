@@ -13,7 +13,6 @@ export const actions = {
 }
 export const initialState = {
   loading: false,
-  loaded: false,
   visible: false,
   owner: '',
   repoes: [],
