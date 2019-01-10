@@ -11,7 +11,7 @@ export const actions = {
   setActiveItem: action('setActiveItem'),
   setListLength: action('setListLength'),
 }
-const initialState = {
+export const initialState = {
   loading: false,
   loaded: false,
   visible: false,
