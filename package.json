@@ -40,6 +40,7 @@
     "@storybook/addon-console": "^1.1.0",
     "@storybook/addon-links": "^4.1.4",
     "@storybook/react": "^4.1.4",
+    "addon-redux": "^0.1.4",
     "babel-loader": "^8.0.5",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-prettier": "^3.0.0",
