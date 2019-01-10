@@ -1,6 +1,8 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
+import { initialState } from './dropdown-list.stories'
+import { withRedux } from '../../../.storybook/decorators'
 
 import SearchField from './search-field'
 
@@ -19,24 +21,27 @@ export const createDropDownList = itemsQuantity => {
   return arr
 }
 
-export const params1 = {
-  loading: false,
-  loaded: false,
-  owner: '',
-  repoes: [],
-}
+storiesOf('Search Field', module)
+  .addDecorator(withRedux(initialState, []))
+  .add('default', () => <SearchField />)
 
 storiesOf('Search Field', module)
-  .add('default', () => <SearchField {...actions} {...params1} />)
-  .add('loading repo', () => (
-    <SearchField {...actions} {...params1} loading={true} owner={'owner'} />
-  ))
-  .add('repo loaded', () => (
-    <SearchField
-      {...actions}
-      {...params1}
-      loaded={true}
-      owner={'owner'}
-      repoes={createDropDownList(10)}
-    />
-  ))
+  .addDecorator(
+    withRedux({ ...initialState, loading: true, owner: 'owner' }, [])
+  )
+  .add('loading repo', () => <SearchField />)
+
+storiesOf('Search Field', module)
+  .addDecorator(
+    withRedux(
+      {
+        ...initialState,
+        loaded: true,
+        owner: 'owner',
+        visible: true,
+        repoes: createDropDownList(10),
+      },
+      []
+    )
+  )
+  .add('repo loaded', () => <SearchField />)
