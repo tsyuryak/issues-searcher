@@ -1,22 +1,39 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getOwnerFromQuery, getTextAfterOwner } from './utils'
+import { getOwnerFromQuery } from '../../ducks/search-field.utils'
 import PropTypes from 'prop-types'
+import {
+  ownerSelector,
+  setTestValues,
+  visibleSelector,
+  setActiveItem,
+  loadingSelector,
+  loadedSelector,
+  activeItemSelector,
+  inputTextSelector,
+  setInputText,
+} from '../../ducks/search-field'
 import styles from './search-field.module.css'
 import DropdownList from './dropdown-list'
 
 export class SearchField extends Component {
-  state = {
-    inputText: this.props.owner,
-    dropdownIsVisible: false,
-    activeItem: -1,
-    repoListLength: 0,
+  componentDidMount = () => {
+    if (process.env.STORYBOOK_MODE) {
+      const { setTestValues, testState } = this.props
+      setTestValues({
+        visible: testState.visible,
+        activeItem: testState.activeItem,
+        repoes: testState.repoes,
+        typedValue: testState.typedValue,
+        loading: testState.loading,
+      })
+    }
   }
 
   setInputText = e => {
     const text = e.target.value
-    this.searchRepo(text)
-    this.setState({ inputText: text })
+    //this.searchRepo(text)
+    this.props.setInputText(text)
   }
 
   searchRepo = query => {
@@ -32,19 +49,13 @@ export class SearchField extends Component {
   }
 
   getSearchButtonState = () => {
-    const { loading } = this.props
+    const { loading, inputText } = this.props
     const text = !loading ? 'Search' : 'Loading repo...'
-    const disabled = !this.state.inputText.trim() || loading
+    const disabled = !inputText.trim() || loading
     return {
       text,
       disabled,
     }
-  }
-
-  toggleDropdownVisibility = () => {
-    const { repoes, loaded } = this.props
-    const dropdownReady = loaded && repoes.length > 0
-    this.setState({ dropdownIsVisible: dropdownReady })
   }
 
   setDropdownInvisible = () => {
@@ -52,20 +63,17 @@ export class SearchField extends Component {
   }
 
   handleKeyDown = e => {
-    console.log(e.keyCode)
+    const { setActiveItem, activeItem } = this.props
     if (e.keyCode === 40) {
-      this.setState({ activeItem: this.state.activeItem + 1 })
+      setActiveItem(activeItem + 1)
     } else if (e.keyCode === 38) {
-      this.setState({ activeItem: this.state.activeItem - 1 })
+      setActiveItem(activeItem - 1)
+    } else if (e.keyCode === 13) {
+      console.log(e.keyCode)
     }
   }
 
-  setActiveItem = item => {
-    this.setState({ activeItem: item })
-  }
-
   componentWillMount = () => {
-    this.toggleDropdownVisibility()
     //window.addEventListener('click', this.setDropdownInvisible)
   }
 
@@ -75,7 +83,8 @@ export class SearchField extends Component {
 
   render() {
     const buttonState = this.getSearchButtonState()
-    const { owner, repoes, onGotoRepo } = this.props
+    const { inputText, loading } = this.props
+    console.log(loading)
     return (
       <div className={styles['search-field']}>
         <form onSubmit={e => this.onHandleSubmit(e)}>
@@ -85,19 +94,10 @@ export class SearchField extends Component {
                 <input
                   type="search"
                   onChange={e => this.setInputText(e)}
-                  value={this.state.inputText}
+                  value={inputText}
                   onKeyDown={e => this.handleKeyDown(e)}
                 />
-                <DropdownList
-                  owner={owner}
-                  visible={this.state.dropdownIsVisible}
-                  repoes={repoes}
-                  typedValue={getTextAfterOwner(this.state.inputText, owner)}
-                  onGoToRepo={onGotoRepo}
-                  activeItem={this.state.activeItem}
-                  resetActiveItem={this.setActiveItem(-1)}
-                  setActiveItem={this.setActiveItem}
-                />
+                {!loading && <DropdownList />}
               </div>
             </li>
             <li>
@@ -114,17 +114,28 @@ export class SearchField extends Component {
   }
 }
 
-SearchField.defaultProps = {
-  owner: '',
-}
-
 SearchField.propTypes = {
   loading: PropTypes.bool.isRequired,
   loaded: PropTypes.bool.isRequired,
-  owner: PropTypes.string,
+  visible: PropTypes.bool.isRequired,
+  activeItem: PropTypes.bool.isRequired,
+  owner: PropTypes.string.isRequired,
+  inputText: PropTypes.string.isRequired,
+  setInputText: PropTypes.func.isRequired,
   onSearchIssues: PropTypes.func.isRequired,
   onSearchRepoes: PropTypes.func.isRequired,
   onGotoRepo: PropTypes.func.isRequired,
 }
 
-export default connect()(SearchField)
+export default connect(
+  state => ({
+    owner: ownerSelector(state),
+    visible: visibleSelector(state),
+    loading: loadingSelector(state),
+    loaded: loadedSelector(state),
+    activeItem: activeItemSelector(state),
+    inputText: inputTextSelector(state),
+    testState: state,
+  }),
+  { setTestValues, setActiveItem, setInputText }
+)(SearchField)
