@@ -3,7 +3,7 @@ import { Record, List } from 'immutable'
 import { takeLatest, call, put } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { createSelector } from 'reselect'
-import { getLastPage } from './util/paginator/parser'
+import { getLastPage } from './issues.utils'
 
 export const moduleName = 'issues'
 const prefix = `${appName}/${moduleName}`
