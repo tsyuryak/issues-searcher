@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getOwnerFromQuery } from '../../ducks/search-field.utils'
 import PropTypes from 'prop-types'
 import {
   ownerSelector,
@@ -12,6 +11,8 @@ import {
   activeItemSelector,
   inputTextSelector,
   setInputText,
+  hideDropdown,
+  typedValueSelector,
 } from '../../ducks/search-field'
 import styles from './search-field.module.css'
 import DropdownList from './dropdown-list'
@@ -26,20 +27,18 @@ export class SearchField extends Component {
         repoes: testState.repoes,
         typedValue: testState.typedValue,
         loading: testState.loading,
+        owner: testState.owner,
       })
     }
   }
 
-  setInputText = e => {
+  handleInputText = e => {
+    const { setInputText, owner } = this.props
     const text = e.target.value
-    //this.searchRepo(text)
-    this.props.setInputText(text)
-  }
-
-  searchRepo = query => {
-    const owner = getOwnerFromQuery(query)
-    if (!owner) return
-    this.props.onSearchRepoes(owner)
+    setInputText(text)
+    if (owner) {
+      this.props.onSearchRepoes(owner)
+    }
   }
 
   onHandleSubmit = e => {
@@ -59,7 +58,7 @@ export class SearchField extends Component {
   }
 
   setDropdownInvisible = () => {
-    this.setState({ dropdownIsVisible: false })
+    this.props.hideDropdown()
   }
 
   handleKeyDown = e => {
@@ -84,7 +83,6 @@ export class SearchField extends Component {
   render() {
     const buttonState = this.getSearchButtonState()
     const { inputText, loading } = this.props
-    console.log(loading)
     return (
       <div className={styles['search-field']}>
         <form onSubmit={e => this.onHandleSubmit(e)}>
@@ -93,7 +91,7 @@ export class SearchField extends Component {
               <div>
                 <input
                   type="search"
-                  onChange={e => this.setInputText(e)}
+                  onChange={e => this.handleInputText(e)}
                   value={inputText}
                   onKeyDown={e => this.handleKeyDown(e)}
                 />
@@ -120,8 +118,10 @@ SearchField.propTypes = {
   visible: PropTypes.bool.isRequired,
   activeItem: PropTypes.bool.isRequired,
   owner: PropTypes.string.isRequired,
+  typedValue: PropTypes.string.isRequired,
   inputText: PropTypes.string.isRequired,
   setInputText: PropTypes.func.isRequired,
+  hideDropdown: PropTypes.func.isRequired,
   onSearchIssues: PropTypes.func.isRequired,
   onSearchRepoes: PropTypes.func.isRequired,
   onGotoRepo: PropTypes.func.isRequired,
@@ -135,7 +135,8 @@ export default connect(
     loaded: loadedSelector(state),
     activeItem: activeItemSelector(state),
     inputText: inputTextSelector(state),
+    typedValue: typedValueSelector(state),
     testState: state,
   }),
-  { setTestValues, setActiveItem, setInputText }
+  { setTestValues, setActiveItem, setInputText, hideDropdown }
 )(SearchField)

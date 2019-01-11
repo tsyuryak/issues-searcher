@@ -15,15 +15,14 @@ import {
 import styles from './dropdown-list.module.css'
 
 class DropdownList extends Component {
-  constructor(props) {
-    super(props)
+  componentDidMount = () => {
     if (process.env.STORYBOOK_MODE) {
-      const { setTestValues, testState } = props
+      const { setTestValues, testState } = this.props
       setTestValues({
         visible: testState.visible,
         activeItem: testState.activeItem,
         repoes: testState.repoes,
-        typedValue: testState.typedValue,
+        owner: testState.owner,
       })
     }
   }

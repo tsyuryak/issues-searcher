@@ -21,6 +21,10 @@ export const createDropDownList = itemsQuantity => {
   return arr
 }
 
+const cannedActions = [
+  { name: 'onSearchRepoes', action: { type: 'SEARCH_REPOES' } },
+]
+
 storiesOf('Search Field', module)
   .addDecorator(withRedux(initialState, []))
   .add('default', () => <SearchField />)
@@ -35,10 +39,12 @@ storiesOf('Search Field', module)
       {
         ...initialState,
         loaded: true,
+        loading: false,
         visible: true,
         repoes: createDropDownList(10),
+        owner: 'owner',
       },
-      []
+      cannedActions
     )
   )
   .add('repo loaded', () => <SearchField />)

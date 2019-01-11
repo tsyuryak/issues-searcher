@@ -16,10 +16,9 @@ export const initialState = {
   visible: false,
   repoes: [],
   typedValue: '',
+  owner: 'owner',
   activeItem: -1,
 }
-
-const cannedActions = [{ name: 'Demo Action', action: { type: 'test' } }]
 
 storiesOf('Search Field/Dropdown', module)
   .addDecorator(withRedux(initialState, []))
@@ -65,17 +64,3 @@ storiesOf('Search Field/Dropdown', module)
     )
   )
   .add('repo list - active item #5', () => <DropdownList />)
-
-storiesOf('Search Field/Dropdown', module)
-  .addDecorator(
-    withRedux(
-      {
-        ...initialState,
-        repoes: createDropDownList(22),
-        visible: true,
-        typedValue: '2',
-      },
-      []
-    )
-  )
-  .add('repo list - filter by 8', () => <DropdownList />)

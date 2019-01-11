@@ -19,7 +19,7 @@ export const ReducerRecord = Record({
   visible: false,
   text: '',
   repoes: [],
-  typedValue: '',
+  owner: null,
   activeItem: -1,
 })
 
@@ -30,8 +30,8 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('visible', action.values.visible)
         .set('repoes', action.values.repoes)
         .set('activeItem', action.values.activeItem)
-        .set('typedValue', action.values.typedValue)
         .set('loading', action.values.loading)
+        .set('owner', action.values.owner)
     case HIDE_DROPDOWN:
       return state.set('visble', false)
     case SET_INPUT_TEXT:
