@@ -22,7 +22,6 @@ class DropdownList extends Component {
       setTestValues({
         visible: testState.visible,
         activeItem: testState.activeItem,
-        owner: testState.owner,
         repoes: testState.repoes,
         typedValue: testState.typedValue,
       })
@@ -78,7 +77,6 @@ DropdownList.propTypes = {
   owner: PropTypes.string.isRequired,
   activeItem: PropTypes.number.isRequired,
   onGoToRepo: PropTypes.func.isRequired,
-  resetActiveItem: PropTypes.func.isRequired,
   setActiveItem: PropTypes.func.isRequired,
 }
 
