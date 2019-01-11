@@ -1,6 +1,7 @@
 import { appName } from '../config'
 import { Record } from 'immutable'
 import { createSelector } from 'reselect'
+import { getTextAfterOwner, getOwnerFromQuery } from './search-field.utils'
 
 export const moduleName = 'search-field'
 const prefix = `${appName}/${moduleName}`
@@ -16,7 +17,6 @@ export const ReducerRecord = Record({
   loading: false,
   visible: false,
   text: '',
-  owner: '',
   repoes: [],
   typedValue: '',
   activeItem: -1,
@@ -27,10 +27,10 @@ export default function reducer(state = ReducerRecord(), action) {
     case SET_TEST_VALUES:
       return state
         .set('visible', action.values.visible)
-        .set('owner', action.values.owner)
         .set('repoes', action.values.repoes)
         .set('activeItem', action.values.activeItem)
         .set('typedValue', action.values.typedValue)
+        .set('loading', action.values.loading)
     case SET_INPUT_TEXT:
       return state.set('text', action.text)
     case SET_ACTIVE_ITEM:
@@ -53,11 +53,6 @@ export const visibleSelector = createSelector(
   state => state.visible
 )
 
-export const ownerSelector = createSelector(
-  stateSelector,
-  state => state.owner
-)
-
 export const repoesSelector = createSelector(
   stateSelector,
   state => state.repoes
@@ -73,9 +68,15 @@ export const inputTextSelector = createSelector(
   state => state.text
 )
 
+export const ownerSelector = createSelector(
+  inputTextSelector,
+  query => getOwnerFromQuery(query)
+)
+
 export const typedValueSelector = createSelector(
-  stateSelector,
-  state => state.typedValue
+  inputTextSelector,
+  ownerSelector,
+  (inputText, owner) => getTextAfterOwner(inputText, owner)
 )
 
 export const activeItemSelector = createSelector(
