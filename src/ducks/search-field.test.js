@@ -1,4 +1,8 @@
-import { getOwnerFromQuery, queryItemIsValid, getTextAfterOwner } from './utils'
+import {
+  getOwnerFromQuery,
+  queryItemIsValid,
+  getTextAfterOwner,
+} from './search-field.utils'
 
 describe('has separator', () => {
   test('has owner if separator is /', () => {
