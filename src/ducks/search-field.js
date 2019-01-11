@@ -12,6 +12,7 @@ export const SEARCH_REPOES = `${prefix}/SEARCH_REPOES`
 export const GO_TO_REPO = `${prefix}/GO_TO_REPO`
 export const SET_ACTIVE_ITEM = `${prefix}/SET_ACTIVE_ITEM`
 export const SET_INPUT_TEXT = `${prefix}/SET_INPUT_TEXT`
+export const HIDE_DROPDOWN = `${prefix}/HIDE_DROPDOWN`
 
 export const ReducerRecord = Record({
   loading: false,
@@ -31,6 +32,8 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('activeItem', action.values.activeItem)
         .set('typedValue', action.values.typedValue)
         .set('loading', action.values.loading)
+    case HIDE_DROPDOWN:
+      return state.set('visble', false)
     case SET_INPUT_TEXT:
       return state.set('text', action.text)
     case SET_ACTIVE_ITEM:
@@ -107,6 +110,11 @@ export const setInputText = text => ({
   type: SET_INPUT_TEXT,
   text,
 })
+
+export const hideDropdown = () => ({
+  type: HIDE_DROPDOWN,
+})
+
 /* 
   onSearchIssues: PropTypes.func.isRequired,
   onSearchRepoes: PropTypes.func.isRequired,
