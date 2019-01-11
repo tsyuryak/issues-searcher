@@ -14,7 +14,6 @@ export const actions = {
 export const initialState = {
   loading: false,
   visible: false,
-  owner: '',
   repoes: [],
   typedValue: '',
   activeItem: -1,
@@ -32,7 +31,6 @@ storiesOf('Search Field/Dropdown', module)
       {
         ...initialState,
         repoes: createDropDownList(10),
-        owner: 'owner',
         visible: true,
       },
       []
@@ -46,7 +44,6 @@ storiesOf('Search Field/Dropdown', module)
       {
         ...initialState,
         repoes: createDropDownList(10),
-        owner: 'owner',
         activeItem: 1,
         visible: true,
       },
@@ -61,7 +58,6 @@ storiesOf('Search Field/Dropdown', module)
       {
         ...initialState,
         repoes: createDropDownList(10),
-        owner: 'owner',
         activeItem: 4,
         visible: true,
       },
@@ -76,7 +72,6 @@ storiesOf('Search Field/Dropdown', module)
       {
         ...initialState,
         repoes: createDropDownList(22),
-        owner: 'owner',
         visible: true,
         typedValue: '2',
       },

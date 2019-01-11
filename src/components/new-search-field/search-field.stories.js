@@ -26,9 +26,7 @@ storiesOf('Search Field', module)
   .add('default', () => <SearchField />)
 
 storiesOf('Search Field', module)
-  .addDecorator(
-    withRedux({ ...initialState, loading: true, owner: 'owner' }, [])
-  )
+  .addDecorator(withRedux({ ...initialState, loading: true }, []))
   .add('loading repo', () => <SearchField />)
 
 storiesOf('Search Field', module)
@@ -37,7 +35,6 @@ storiesOf('Search Field', module)
       {
         ...initialState,
         loaded: true,
-        owner: 'owner',
         visible: true,
         repoes: createDropDownList(10),
       },
