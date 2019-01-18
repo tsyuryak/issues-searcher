@@ -3,86 +3,96 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import {
   ownerSelector,
-  setTestValues,
   visibleSelector,
-  setActiveItem,
   loadingSelector,
-  loadedSelector,
+  changeDropdownActiveItem,
   activeItemSelector,
   inputTextSelector,
-  setInputText,
+  changeInputText,
   hideDropdown,
-  typedValueSelector,
+  repoesSelector,
+  redirectToIssues,
+  textAfterOwnerSelector,
 } from '../../ducks/search-field'
 import styles from './search-field.module.css'
 import DropdownList from './dropdown-list'
 
 export class SearchField extends Component {
-  componentDidMount = () => {
-    if (process.env.STORYBOOK_MODE) {
-      const { setTestValues, testState } = this.props
-      setTestValues({
-        visible: testState.visible,
-        activeItem: testState.activeItem,
-        repoes: testState.repoes,
-        typedValue: testState.typedValue,
-        loading: testState.loading,
-        owner: testState.owner,
-      })
-    }
-  }
-
   handleInputText = e => {
-    const { setInputText, owner } = this.props
+    const { changeInputText } = this.props
     const text = e.target.value
-    setInputText(text)
-    if (owner) {
-      this.props.onSearchRepoes(owner)
-    }
+    changeInputText(text)
   }
 
   onHandleSubmit = e => {
     e.preventDefault()
-    const { inputText } = this.state
-    this.props.onSearchIssues(inputText)
+    this.props.redirectToIssues(this.props.repo)
   }
 
   getSearchButtonState = () => {
-    const { loading, inputText } = this.props
-    const text = !loading ? 'Search' : 'Loading repo...'
-    const disabled = !inputText.trim() || loading
+    const { loading } = this.props
+
     return {
-      text,
-      disabled,
+      text: !loading ? 'Search' : 'Loading repo...',
+      disabled: loading,
     }
   }
 
-  setDropdownInvisible = () => {
+  resetActiveItem = () => {
+    this.props.changeDropdownActiveItem({ num: 0, name: '' })
+  }
+
+  hideDropdown = () => {
     this.props.hideDropdown()
+    this.resetActiveItem()
   }
 
   handleKeyDown = e => {
-    const { setActiveItem, activeItem } = this.props
+    const {
+      changeDropdownActiveItem,
+      activeItem,
+      repoes,
+      redirectToIssues,
+    } = this.props
+
     if (e.keyCode === 40) {
-      setActiveItem(activeItem + 1)
+      let item = activeItem.num % repoes.length
+      changeDropdownActiveItem({
+        num: item + 1,
+        name: repoes[item].name,
+      })
     } else if (e.keyCode === 38) {
-      setActiveItem(activeItem - 1)
-    } else if (e.keyCode === 13) {
-      console.log(e.keyCode)
+      e.preventDefault()
+      let item = activeItem.num % (repoes.length + 1)
+      item = item <= 1 ? repoes.length + 1 : item
+      changeDropdownActiveItem({
+        num: item - 1,
+        name: repoes[item - 2].name,
+      })
+    } else if (e.keyCode === 13 && activeItem.name) {
+      redirectToIssues(activeItem.name)
+    } else if (e.keyCode === 8) {
+      this.resetActiveItem()
     }
   }
 
   componentWillMount = () => {
-    //window.addEventListener('click', this.setDropdownInvisible)
+    window.addEventListener('click', this.hideDropdown)
   }
 
   componentWillUnmount = () => {
-    //window.removeEventListener('click', this.setDropdownInvisible)
+    window.removeEventListener('click', this.hideDropdown)
   }
 
   render() {
     const buttonState = this.getSearchButtonState()
-    const { inputText, loading } = this.props
+    const {
+      inputText,
+      activeItem,
+      visible,
+      changeDropdownActiveItem,
+      repoes,
+    } = this.props
     return (
       <div className={styles['search-field']}>
         <form onSubmit={e => this.onHandleSubmit(e)}>
@@ -93,9 +103,18 @@ export class SearchField extends Component {
                   type="search"
                   onChange={e => this.handleInputText(e)}
                   value={inputText}
+                  autoFocus
                   onKeyDown={e => this.handleKeyDown(e)}
                 />
-                {!loading && <DropdownList />}
+                {visible && (
+                  <DropdownList
+                    repoes={repoes}
+                    activeItem={activeItem}
+                    resetActiveItem={this.resetActiveItem}
+                    setActiveItem={changeDropdownActiveItem}
+                    onGoToRepo={redirectToIssues}
+                  />
+                )}
               </div>
             </li>
             <li>
@@ -114,29 +133,26 @@ export class SearchField extends Component {
 
 SearchField.propTypes = {
   loading: PropTypes.bool.isRequired,
-  loaded: PropTypes.bool.isRequired,
   visible: PropTypes.bool.isRequired,
-  activeItem: PropTypes.bool.isRequired,
-  owner: PropTypes.string.isRequired,
-  typedValue: PropTypes.string.isRequired,
+  activeItem: PropTypes.shape({
+    num: PropTypes.number.isRequired,
+    name: PropTypes.string,
+  }).isRequired,
+  owner: PropTypes.string,
   inputText: PropTypes.string.isRequired,
-  setInputText: PropTypes.func.isRequired,
+  changeInputText: PropTypes.func.isRequired,
   hideDropdown: PropTypes.func.isRequired,
-  onSearchIssues: PropTypes.func.isRequired,
-  onSearchRepoes: PropTypes.func.isRequired,
-  onGotoRepo: PropTypes.func.isRequired,
 }
 
 export default connect(
   state => ({
     owner: ownerSelector(state),
+    repoes: repoesSelector(state),
     visible: visibleSelector(state),
     loading: loadingSelector(state),
-    loaded: loadedSelector(state),
     activeItem: activeItemSelector(state),
     inputText: inputTextSelector(state),
-    typedValue: typedValueSelector(state),
-    testState: state,
+    repo: textAfterOwnerSelector(state),
   }),
-  { setTestValues, setActiveItem, setInputText, hideDropdown }
+  { changeDropdownActiveItem, changeInputText, hideDropdown, redirectToIssues }
 )(SearchField)

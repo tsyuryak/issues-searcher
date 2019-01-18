@@ -1,43 +1,75 @@
-import { appName } from '../config'
+import { appName, axiosInst } from '../config'
 import { Record } from 'immutable'
 import { createSelector } from 'reselect'
-import { getTextAfterOwner, getOwnerFromQuery } from './search-field.utils'
+import { push } from 'connected-react-router'
+import {
+  put,
+  takeLatest,
+  call,
+  fork,
+  throttle,
+  select,
+  all,
+} from 'redux-saga/effects'
+import {
+  getTextAfterOwner,
+  startRequest,
+  getOwnerFromText,
+} from './search-field.utils'
 
 export const moduleName = 'search-field'
 const prefix = `${appName}/${moduleName}`
 
-export const SET_TEST_VALUES = `${prefix}/SET_TEST_VALUES`
-export const SEARCH_ISSUES = `${prefix}/SEARCH_ISSUES`
-export const SEARCH_REPOES = `${prefix}/SEARCH_REPOES`
-export const GO_TO_REPO = `${prefix}/GO_TO_REPO`
-export const SET_ACTIVE_ITEM = `${prefix}/SET_ACTIVE_ITEM`
-export const SET_INPUT_TEXT = `${prefix}/SET_INPUT_TEXT`
-export const HIDE_DROPDOWN = `${prefix}/HIDE_DROPDOWN`
+export const CHANGED_INPUT_TEXT = `${prefix}/CHANGED_INPUT_TEXT`
+export const SET_OWNER = `${prefix}/SET_OWNER`
+export const SEARCH_REPOES_REQUEST = `${prefix}/SEARCH_REPOES_REQUEST`
+export const SEARCH_REPOES_SUCCESS = `${prefix}/SEARCH_REPOES_SUCCESS`
+export const SEARCH_REPOES_ERROR = `${prefix}/SEARCH_REPOES_ERROR`
+export const SET_REPO = `${prefix}/SET_REPO`
+export const SET_ACTIVE_DROPDOWN_ITEM = `${prefix}/SET_ACTIVE_DROPDOWN_ITEM`
+export const CHANGED_DROPDOWN_ACTIVE_ITEM = `${prefix}/CHANGED_DROPDOWN_ACTIVE_ITEM`
+export const HIDE_DROPDOWN_REQUEST = `${prefix}/HIDE_DROPDOWN_REQUEST`
+export const REDIRECT_TO_ISSUES = `${prefix}/REDIRECT_TO_ISSUES`
+export const REDIRECT_ERROR = `${prefix}/REDIRECT_ERROR`
 
 export const ReducerRecord = Record({
-  loading: false,
-  visible: false,
   text: '',
+  owner: '',
+  loading: false,
   repoes: [],
-  owner: null,
-  activeItem: -1,
+  error: null,
+  currentRepo: '',
+  activeItem: {
+    num: 0,
+    name: '',
+  },
+  issuesQuantity: 30,
+  page: 1,
+  repo: '',
 })
 
 export default function reducer(state = ReducerRecord(), action) {
   switch (action.type) {
-    case SET_TEST_VALUES:
-      return state
-        .set('visible', action.values.visible)
-        .set('repoes', action.values.repoes)
-        .set('activeItem', action.values.activeItem)
-        .set('loading', action.values.loading)
-        .set('owner', action.values.owner)
-    case HIDE_DROPDOWN:
-      return state.set('visble', false)
-    case SET_INPUT_TEXT:
+    case CHANGED_INPUT_TEXT:
       return state.set('text', action.text)
-    case SET_ACTIVE_ITEM:
+    case SET_OWNER:
+      return state.set('owner', action.owner).set('repoes', [])
+    case SEARCH_REPOES_REQUEST:
+      return state.set('loading', true).set('error', null)
+    case SEARCH_REPOES_SUCCESS:
+      return state.set('loading', false).set('repoes', action.repoes)
+    case SEARCH_REPOES_ERROR:
+    case REDIRECT_ERROR:
+      return state.set('error', action.error).set('loading', false)
+    case SET_ACTIVE_DROPDOWN_ITEM:
       return state.set('activeItem', action.item)
+    case HIDE_DROPDOWN_REQUEST:
+      return state.set('repoes', [])
+    case REDIRECT_TO_ISSUES:
+      return state
+        .set('repo', action.repo)
+        .set('issuesQuantity', action.issuesQuantity)
+        .set('page', action.page)
     default:
       return state
   }
@@ -51,19 +83,9 @@ export const loadingSelector = createSelector(
   state => state.loading
 )
 
-export const visibleSelector = createSelector(
-  stateSelector,
-  state => state.visible
-)
-
 export const repoesSelector = createSelector(
   stateSelector,
   state => state.repoes
-)
-
-export const loadedSelector = createSelector(
-  repoesSelector,
-  repoes => repoes.length > 0
 )
 
 export const inputTextSelector = createSelector(
@@ -71,59 +93,137 @@ export const inputTextSelector = createSelector(
   state => state.text
 )
 
-export const ownerSelector = createSelector(
-  inputTextSelector,
-  query => getOwnerFromQuery(query)
-)
-
-export const typedValueSelector = createSelector(
-  inputTextSelector,
-  ownerSelector,
-  (inputText, owner) => getTextAfterOwner(inputText, owner)
-)
-
 export const activeItemSelector = createSelector(
   stateSelector,
   state => state.activeItem
 )
 
-export const filteredRepoSelector = createSelector(
+export const queryTextSelector = createSelector(
+  inputTextSelector,
+  activeItemSelector,
+  (inputText, repo) => inputText + repo.name
+)
+
+export const ownerSelector = createSelector(
+  stateSelector,
+  state => state.owner
+)
+
+export const textAfterOwnerSelector = createSelector(
+  inputTextSelector,
+  ownerSelector,
+  (inputText, owner) => getTextAfterOwner(inputText, owner)
+)
+
+export const visibleSelector = createSelector(
+  ownerSelector,
+  loadingSelector,
   repoesSelector,
-  typedValueSelector,
-  (repoes, typedValue) => repoes.filter(r => r.name.includes(typedValue))
+  (owner, loading, repoes) => !!owner && !loading && repoes.length > 0
 )
 
 //AC
-
-//Only for STORYBOOK_MODE = true in .env
-export const setTestValues = values => ({
-  type: SET_TEST_VALUES,
-  values,
-})
-
-export const setActiveItem = item => ({
-  type: SET_ACTIVE_ITEM,
-  item,
-})
-
-export const setInputText = text => ({
-  type: SET_INPUT_TEXT,
+export const changeInputText = text => ({
+  type: CHANGED_INPUT_TEXT,
   text,
 })
 
-export const hideDropdown = () => ({
-  type: HIDE_DROPDOWN,
+export const setOwner = owner => ({
+  type: SET_OWNER,
+  owner,
 })
 
-/* 
-  onSearchIssues: PropTypes.func.isRequired,
-  onSearchRepoes: PropTypes.func.isRequired,
-  onGotoRepo: PropTypes.func.isRequired,
-*/
+export const setRepo = repo => ({
+  type: SET_REPO,
+  repo,
+})
 
-/*
-  ---dropdown---
-  resetActiveItem: PropTypes.func.isRequired,
-  setActiveItem: PropTypes.func.isRequired,
-  setListLength: PropTypes.func.isRequired,
-*/
+export const changeDropdownActiveItem = item => ({
+  type: CHANGED_DROPDOWN_ACTIVE_ITEM,
+  item,
+})
+
+export const setActiveDropdownItem = item => ({
+  type: SET_ACTIVE_DROPDOWN_ITEM,
+  item,
+})
+
+export const hideDropdown = () => ({
+  type: HIDE_DROPDOWN_REQUEST,
+})
+
+export const redirectToIssues = (repo, issuesQuantity = 30, page = 1) => ({
+  type: REDIRECT_TO_ISSUES,
+  payload: { repo, issuesQuantity, page },
+})
+
+//Sagas
+export function* redirectToIssuesSaga(action) {
+  const { repo, page, issuesQuantity } = action.payload
+  const owner = yield select(ownerSelector)
+  if (!owner) {
+    yield put({
+      type: REDIRECT_ERROR,
+      error: 'should has an owner',
+    })
+  } else {
+    const url = `/issues/${owner}/${repo}/${issuesQuantity}/${page}`
+    yield put(push(url))
+  }
+}
+
+export function* changeActiveDropdownItemSaga() {
+  yield throttle(50, CHANGED_DROPDOWN_ACTIVE_ITEM, setActiveDropdownItemSaga)
+}
+
+export function* setActiveDropdownItemSaga(action) {
+  const { item } = action
+  yield put(setActiveDropdownItem(item))
+  const owner = yield select(ownerSelector)
+  const repo = yield select(activeItemSelector)
+  if (owner && repo.num > 0) {
+    yield put(changeInputText(`${owner} ${repo.name}`))
+  }
+}
+
+export function* searchRepoesSaga() {
+  yield throttle(200, CHANGED_INPUT_TEXT, handleInputSaga)
+}
+
+export function* handleInputSaga(input) {
+  const { text } = input
+
+  const owner = yield select(ownerSelector)
+  if (text.length < 2) {
+    yield put(setOwner(''))
+  } else if (getOwnerFromText(text)) {
+    yield put(setOwner(text))
+  } else if (owner && startRequest(text)) {
+    yield fork(searchRepoesRequestSaga, owner)
+  }
+}
+
+export function* searchRepoesRequestSaga(owner) {
+  yield put({ type: SEARCH_REPOES_REQUEST })
+  const reqUrl = `users/${owner}/repos`
+  try {
+    const req = yield call([axiosInst, axiosInst.get], reqUrl)
+    yield put({
+      type: SEARCH_REPOES_SUCCESS,
+      repoes: req.data.map(repo => ({ id: repo.id, name: repo.name })),
+    })
+  } catch (error) {
+    yield put({
+      type: SEARCH_REPOES_ERROR,
+      error,
+    })
+  }
+}
+
+export function* saga() {
+  yield all([
+    searchRepoesSaga(),
+    takeLatest(REDIRECT_TO_ISSUES, redirectToIssuesSaga),
+    changeActiveDropdownItemSaga(),
+  ])
+}
