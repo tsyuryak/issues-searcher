@@ -1,5 +1,5 @@
 import React from 'react'
-import SearchField from '../components/search-field'
+import SearchField from '../components/search-field/search-field'
 import styles from './styles/home-page.module.css'
 
 function HomePage() {

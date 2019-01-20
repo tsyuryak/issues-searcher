@@ -12,7 +12,6 @@ import {
   hideDropdown,
   repoesSelector,
   redirectToIssues,
-  textAfterOwnerSelector,
 } from '../../ducks/search-field'
 import styles from './search-field.module.css'
 import DropdownList from './dropdown-list'
@@ -152,7 +151,6 @@ export default connect(
     loading: loadingSelector(state),
     activeItem: activeItemSelector(state),
     inputText: inputTextSelector(state),
-    repo: textAfterOwnerSelector(state),
   }),
   { changeDropdownActiveItem, changeInputText, hideDropdown, redirectToIssues }
 )(SearchField)
