@@ -22,6 +22,8 @@ import {
   goToIssues,
   GOTO_TO_ISSUES,
   goToIssuesSaga,
+  hideDropdown,
+  HIDE_DROPDOWN,
 } from './search-field'
 
 import {
@@ -410,5 +412,11 @@ describe('goToIssuesSaga', () => {
       .finish()
       .next()
       .isDone()
+  })
+})
+
+test('should create an action for hide dropdown', () => {
+  expect(hideDropdown()).toEqual({
+    type: HIDE_DROPDOWN,
   })
 })
