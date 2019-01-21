@@ -19,6 +19,9 @@ import {
   CHANGED_DROPDOWN_ACTIVE_ITEM,
   changeDropdownActiveItem,
   setDropdownActiveItemSaga,
+  goToIssues,
+  GOTO_TO_ISSUES,
+  goToIssuesSaga,
 } from './search-field'
 
 import {
@@ -26,6 +29,7 @@ import {
   isQueryResulsIsValid,
   readySearchRepo,
 } from './search-field.utils'
+import { push } from 'connected-react-router'
 
 test('should create an action when text changed', () => {
   const text = 'changed text'
@@ -192,10 +196,8 @@ describe('handleInputSaga has only an owner with space splitter', () => {
       .next('owner ')
       .put(setQueryResult('owner', ''))
       .next()
-      .select(ownerSelector)
-      .next('owner')
-      .select(repoSelector)
-      .next('')
+      .all([select(ownerSelector), select(repoSelector)])
+      .next(['owner', ''])
       .fork(fetchRepoesSaga)
       .next()
       .isDone()
@@ -225,10 +227,8 @@ describe('handleInputSaga has only an owner with "/" splitter', () => {
       .next('owner/')
       .put(setQueryResult('owner', ''))
       .next()
-      .select(ownerSelector)
-      .next('owner')
-      .select(repoSelector)
-      .next('')
+      .all([select(ownerSelector), select(repoSelector)])
+      .next(['owner', ''])
       .fork(fetchRepoesSaga)
       .next()
       .isDone()
@@ -257,10 +257,8 @@ describe('handleInputSaga has an owner and a repo', () => {
       .next('owner repo')
       .put(setQueryResult('owner', 'repo'))
       .next()
-      .select(ownerSelector)
-      .next('owner')
-      .select(repoSelector)
-      .next('repo')
+      .all([select(ownerSelector), select(repoSelector)])
+      .next(['owner', 'repo'])
       .isDone()
   })
 
@@ -291,7 +289,7 @@ describe('fetch repoes', () => {
     { id: 3, name: 'name3' },
   ]
   const url = `users/owner/repos`
-  test('should fetch a repoes array - unit test', () => {
+  test('should fetch the repoes array - unit test', () => {
     const saga = testSaga(fetchRepoesSaga)
     saga
       .next()
@@ -330,7 +328,7 @@ test('should create an action when an active item changed', () => {
 })
 
 describe('setDropdownActiveItemSaga', () => {
-  test('1', () => {
+  test('1 case', () => {
     const obj = { itemId: 1, name: 'repo' }
     const saga = testSaga(
       setDropdownActiveItemSaga,
@@ -340,18 +338,16 @@ describe('setDropdownActiveItemSaga', () => {
       .next()
       .put(changeDropdownActiveItem(obj))
       .next()
-      .select(ownerSelector)
-      .next('owner')
-      .select(repoSelector)
-      .next('repo')
       .select(inputTextSelector)
       .next('owner and_some_text')
+      .all([select(ownerSelector), select(repoSelector)])
+      .next(['owner', 'repo'])
       .put(changeInputText('owner repo'))
       .next()
       .isDone()
   })
 
-  test('2', () => {
+  test('2 case', () => {
     const obj = { itemId: 0, name: '' }
     const saga = testSaga(
       setDropdownActiveItemSaga,
@@ -361,16 +357,14 @@ describe('setDropdownActiveItemSaga', () => {
       .next()
       .put(changeDropdownActiveItem(obj))
       .next()
-      .select(ownerSelector)
-      .next('owner')
-      .select(repoSelector)
-      .next('')
       .select(inputTextSelector)
-      .next()
+      .next('some_text')
+      .all([select(ownerSelector), select(repoSelector)])
+      .next(['owner', ''])
       .isDone()
   })
 
-  test('3', () => {
+  test('3 case', () => {
     const obj = { itemId: 1, name: 'repo' }
     const saga = testSaga(
       setDropdownActiveItemSaga,
@@ -380,13 +374,53 @@ describe('setDropdownActiveItemSaga', () => {
       .next()
       .put(changeDropdownActiveItem(obj))
       .next()
-      .select(ownerSelector)
-      .next('owner')
-      .select(repoSelector)
-      .next('repo')
       .select(inputTextSelector)
       .next('owner/and_some_text')
+      .all([select(ownerSelector), select(repoSelector)])
+      .next(['owner', 'repo'])
       .put(changeInputText('owner/repo'))
+      .next()
+      .isDone()
+  })
+})
+
+describe('should create goToIssues action', () => {
+  test('without args', () => {
+    const action = {
+      type: GOTO_TO_ISSUES,
+      payload: { quantityOnPage: 30, page: 1 },
+    }
+    expect(goToIssues()).toEqual(action)
+  })
+
+  test('with args', () => {
+    const action = {
+      type: GOTO_TO_ISSUES,
+      payload: { quantityOnPage: 52, page: 4 },
+    }
+    expect(goToIssues(52, 4)).toEqual(action)
+  })
+})
+
+describe('goToIssuesSaga', () => {
+  test('should give the issues link', () => {
+    const saga = testSaga(goToIssuesSaga, goToIssues())
+    saga
+      .next({ quantityOnPage: 30, page: 1 })
+      .all([select(ownerSelector), select(repoSelector)])
+      .next(['owner', 'repo'])
+      .put(push(`/issues/owner/repo/30/1`))
+      .next()
+      .isDone()
+  })
+
+  test('should throw', () => {
+    const saga = testSaga(goToIssuesSaga, goToIssues())
+    saga
+      .next({ quantityOnPage: 30, page: 1 })
+      .all([select(ownerSelector), select(repoSelector)])
+      .next(['owner', 'repo'])
+      .finish()
       .next()
       .isDone()
   })

@@ -12,28 +12,15 @@ import {
   all,
 } from 'redux-saga/effects'
 import {
-  getTextAfterOwner,
-  startRequest,
-  textHasOwner,
   isQueryResulsIsValid,
   parseQueryText,
   readySearchRepo,
-  addRepoToInputText,
 } from './search-field.utils'
 
 export const moduleName = 'search-field'
 const prefix = `${appName}/${moduleName}`
 
-export const SET_OWNER = `${prefix}/SET_OWNER`
-export const SEARCH_REPOES_REQUEST = `${prefix}/SEARCH_REPOES_REQUEST`
-export const SEARCH_REPOES_SUCCESS = `${prefix}/SEARCH_REPOES_SUCCESS`
-export const SEARCH_REPOES_ERROR = `${prefix}/SEARCH_REPOES_ERROR`
-export const SET_REPO = `${prefix}/SET_REPO`
-export const SET_ACTIVE_DROPDOWN_ITEM = `${prefix}/SET_ACTIVE_DROPDOWN_ITEM`
-export const HIDE_DROPDOWN_REQUEST = `${prefix}/HIDE_DROPDOWN_REQUEST`
-export const REDIRECT_TO_ISSUES = `${prefix}/REDIRECT_TO_ISSUES`
-export const REDIRECT_ERROR = `${prefix}/REDIRECT_ERROR`
-//////////////////////////////////////////////////////////////
+//Constants
 
 export const SET_QUERY_RESULT = `${prefix}/SET_QUERY_RESULT`
 export const CHANGED_INPUT_TEXT = `${prefix}/CHANGED_INPUT_TEXT`
@@ -41,9 +28,9 @@ export const FECTH_REPOES_SUCCESS = `${prefix}/FECTH_REPOES_SUCCESS`
 export const FETCH_REPOES_REQUEST = `${prefix}/FETCH_REPOES_REQUEST`
 export const SEARCH_FIELD_ERROR = `${prefix}/SEARCH_FIELD_ERROR`
 export const CHANGED_DROPDOWN_ACTIVE_ITEM = `${prefix}/CHANGED_DROPDOWN_ACTIVE_ITEM`
+export const GOTO_TO_ISSUES = `${prefix}/GOTO_TO_ISSUES`
 
-//////////////////////////////////////////////////////////////
-
+//Reducer
 export const ReducerRecord = Record({
   inputText: '',
   owner: '',
@@ -70,7 +57,7 @@ export default function reducer(state = ReducerRecord(), action) {
       return state
         .set('itemId', action.item.itemId)
         .set('repo', action.item.name)
-    case SEARCH_REPOES_ERROR:
+    case SEARCH_FIELD_ERROR:
       return state.set('error', action.error)
     default:
       return state
@@ -79,6 +66,11 @@ export default function reducer(state = ReducerRecord(), action) {
 
 //Selectors
 export const stateSelector = state => state[moduleName]
+
+export const inputTextSelector = createSelector(
+  stateSelector,
+  state => state.inputText
+)
 
 export const loadingSelector = createSelector(
   stateSelector,
@@ -93,11 +85,6 @@ export const repoSelector = createSelector(
 export const repoesSelector = createSelector(
   stateSelector,
   state => state.repoes
-)
-
-export const inputTextSelector = createSelector(
-  stateSelector,
-  state => state.inputText
 )
 
 export const ownerSelector = createSelector(
@@ -151,49 +138,26 @@ export const changeDropdownActiveItem = ({ itemId, name }) => ({
   },
 })
 
-///////////////////////////////////////////////////////
-
-export const setOwner = owner => ({
-  type: SET_OWNER,
-  owner,
-})
-
-export const setRepo = repo => ({
-  type: SET_REPO,
-  repo,
-})
-
-export const setActiveDropdownItem = item => ({
-  type: SET_ACTIVE_DROPDOWN_ITEM,
-  item,
-})
-
-export const hideDropdown = () => ({
-  type: HIDE_DROPDOWN_REQUEST,
-})
-
-export const redirectToIssues = (repo, issuesQuantity = 30, page = 1) => ({
-  type: REDIRECT_TO_ISSUES,
-  payload: { repo, issuesQuantity, page },
+export const goToIssues = (quantityOnPage = 30, page = 1) => ({
+  type: GOTO_TO_ISSUES,
+  payload: { quantityOnPage, page },
 })
 
 //Sagas
-export function* redirectToIssuesSaga(action) {
-  const { page, issuesQuantity } = action.payload
-  const owner = yield select(ownerSelector)
-  const repo = yield select(repoesSelector)
+export function* goToIssuesSaga(action) {
+  const { page, quantityOnPage } = action.payload
+
+  const [owner, repo] = yield all([select(ownerSelector), select(repoSelector)])
   if (!owner || !repo) {
     yield put({
-      type: REDIRECT_ERROR,
-      error: 'should has an owner',
+      type: SEARCH_FIELD_ERROR,
+      error: 'should has an owner and an repo',
     })
   } else {
-    const url = `/issues/${owner}/${repo}/${issuesQuantity}/${page}`
+    const url = `/issues/${owner}/${repo}/${quantityOnPage}/${page}`
     yield put(push(url))
   }
 }
-
-//
 
 export function* changeDropdownActiveItemSaga() {
   yield throttle(50, CHANGED_DROPDOWN_ACTIVE_ITEM, setDropdownActiveItemSaga)
@@ -201,9 +165,8 @@ export function* changeDropdownActiveItemSaga() {
 
 export function* setDropdownActiveItemSaga(action) {
   yield put(action)
-  const owner = yield select(ownerSelector)
-  const repo = yield select(repoSelector)
   const inputText = yield select(inputTextSelector)
+  const [owner, repo] = yield all([select(ownerSelector), select(repoSelector)])
   if (owner && repo) {
     const text = inputText.includes('/')
       ? `${owner}/${repo}`
@@ -222,8 +185,10 @@ export function* handleInputSaga(input) {
   const results = parseQueryText(text)
   if (isQueryResulsIsValid(results)) {
     yield put(setQueryResult(results.owner, results.repo))
-    const owner = yield select(ownerSelector)
-    const repo = yield select(repoSelector)
+    const [owner, repo] = yield all([
+      select(ownerSelector),
+      select(repoSelector),
+    ])
     if (owner.length > 0 && repo.length === 0 && readySearchRepo(text)) {
       yield fork(fetchRepoesSaga)
     }
@@ -246,12 +211,10 @@ export function* fetchRepoesSaga() {
   }
 }
 
-//
-
 export function* saga() {
   yield all([
     searchRepoesSaga(),
-    takeLatest(REDIRECT_TO_ISSUES, redirectToIssuesSaga),
+    takeLatest(GOTO_TO_ISSUES, goToIssuesSaga),
     changeDropdownActiveItemSaga(),
   ])
 }
