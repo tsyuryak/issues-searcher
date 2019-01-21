@@ -10,6 +10,7 @@ import {
   throttle,
   select,
   all,
+  race,
 } from 'redux-saga/effects'
 import {
   isQueryResulsIsValid,
@@ -163,8 +164,7 @@ export function* changeDropdownActiveItemSaga() {
   yield throttle(50, CHANGED_DROPDOWN_ACTIVE_ITEM, setDropdownActiveItemSaga)
 }
 
-export function* setDropdownActiveItemSaga(action) {
-  yield put(action)
+export function* setDropdownActiveItemSaga() {
   const inputText = yield select(inputTextSelector)
   const [owner, repo] = yield all([select(ownerSelector), select(repoSelector)])
   if (owner && repo) {
@@ -179,8 +179,7 @@ export function* searchRepoesSaga() {
   yield throttle(200, CHANGED_INPUT_TEXT, handleInputSaga)
 }
 
-export function* handleInputSaga(input) {
-  yield put(input)
+export function* handleInputSaga() {
   const text = yield select(inputTextSelector)
   const results = parseQueryText(text)
   if (isQueryResulsIsValid(results)) {
@@ -212,9 +211,10 @@ export function* fetchRepoesSaga() {
 }
 
 export function* saga() {
-  yield all([
-    searchRepoesSaga(),
-    takeLatest(GOTO_TO_ISSUES, goToIssuesSaga),
-    changeDropdownActiveItemSaga(),
-  ])
+  // yield all([
+  //   searchRepoesSaga(),
+  //   takeLatest(GOTO_TO_ISSUES, goToIssuesSaga),
+  //   changeDropdownActiveItemSaga(),
+  // ])
+  yield race([searchRepoesSaga(), changeDropdownActiveItemSaga()])
 }

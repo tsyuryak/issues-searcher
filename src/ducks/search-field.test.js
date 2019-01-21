@@ -190,8 +190,6 @@ describe('handleInputSaga has only an owner with space splitter', () => {
     const saga = testSaga(handleInputSaga, changeInputText('owner '))
     saga
       .next()
-      .put(changeInputText('owner '))
-      .next()
       .select(inputTextSelector)
       .next('owner ')
       .put(setQueryResult('owner', ''))
@@ -204,7 +202,6 @@ describe('handleInputSaga has only an owner with space splitter', () => {
   })
   test('integration test', async () => {
     await expectSaga(handleInputSaga, changeInputText('owner '))
-      .put(changeInputText('owner '))
       .provide([
         [select(inputTextSelector), 'owner '],
         [select(ownerSelector), 'owner'],
@@ -220,8 +217,6 @@ describe('handleInputSaga has only an owner with "/" splitter', () => {
   test('unit test', () => {
     const saga = testSaga(handleInputSaga, changeInputText('owner/'))
     saga
-      .next()
-      .put(changeInputText('owner/'))
       .next()
       .select(inputTextSelector)
       .next('owner/')
@@ -250,8 +245,6 @@ describe('handleInputSaga has an owner and a repo', () => {
   test('unit test', () => {
     const saga = testSaga(handleInputSaga, changeInputText('owner repo'))
     saga
-      .next()
-      .put(changeInputText('owner repo'))
       .next()
       .select(inputTextSelector)
       .next('owner repo')
@@ -336,8 +329,6 @@ describe('setDropdownActiveItemSaga', () => {
     )
     saga
       .next()
-      .put(changeDropdownActiveItem(obj))
-      .next()
       .select(inputTextSelector)
       .next('owner and_some_text')
       .all([select(ownerSelector), select(repoSelector)])
@@ -355,8 +346,6 @@ describe('setDropdownActiveItemSaga', () => {
     )
     saga
       .next()
-      .put(changeDropdownActiveItem(obj))
-      .next()
       .select(inputTextSelector)
       .next('some_text')
       .all([select(ownerSelector), select(repoSelector)])
@@ -371,8 +360,6 @@ describe('setDropdownActiveItemSaga', () => {
       changeDropdownActiveItem({ itemId: 1, name: 'repo' })
     )
     saga
-      .next()
-      .put(changeDropdownActiveItem(obj))
       .next()
       .select(inputTextSelector)
       .next('owner/and_some_text')
