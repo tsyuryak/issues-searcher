@@ -30,6 +30,7 @@ export const FETCH_REPOES_REQUEST = `${prefix}/FETCH_REPOES_REQUEST`
 export const SEARCH_FIELD_ERROR = `${prefix}/SEARCH_FIELD_ERROR`
 export const CHANGED_DROPDOWN_ACTIVE_ITEM = `${prefix}/CHANGED_DROPDOWN_ACTIVE_ITEM`
 export const GOTO_TO_ISSUES = `${prefix}/GOTO_TO_ISSUES`
+export const HIDE_DROPDOWN = `${prefix}/HIDE_DROPDOWN`
 
 //Reducer
 export const ReducerRecord = Record({
@@ -60,6 +61,8 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('repo', action.item.name)
     case SEARCH_FIELD_ERROR:
       return state.set('error', action.error)
+    case HIDE_DROPDOWN:
+      return state.set('repoes', [])
     default:
       return state
   }
@@ -112,6 +115,10 @@ export const visibleSelector = createSelector(
 )
 
 //AC
+
+export const hideDropdown = () => ({
+  type: HIDE_DROPDOWN,
+})
 
 export const changeInputText = text => ({
   type: CHANGED_INPUT_TEXT,
