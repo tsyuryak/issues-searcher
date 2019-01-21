@@ -155,7 +155,10 @@ export const goToIssues = (quantityOnPage = 30, page = 1) => ({
 export function* goToIssuesSaga(action) {
   const { page, quantityOnPage } = action.payload
 
-  const [owner, repo] = yield all([select(ownerSelector), select(repoSelector)])
+  const { owner, repo } = yield all({
+    owner: select(ownerSelector),
+    repo: select(repoSelector),
+  })
   if (!owner || !repo) {
     yield put({
       type: SEARCH_FIELD_ERROR,
@@ -173,7 +176,10 @@ export function* changeDropdownActiveItemSaga() {
 
 export function* setDropdownActiveItemSaga() {
   const inputText = yield select(inputTextSelector)
-  const [owner, repo] = yield all([select(ownerSelector), select(repoSelector)])
+  const { owner, repo } = yield all({
+    owner: select(ownerSelector),
+    repo: select(repoSelector),
+  })
   if (owner && repo) {
     const text = inputText.includes('/')
       ? `${owner}/${repo}`
@@ -191,10 +197,10 @@ export function* handleInputSaga() {
   const results = parseQueryText(text)
   if (isQueryResulsIsValid(results)) {
     yield put(setQueryResult(results.owner, results.repo))
-    const [owner, repo] = yield all([
-      select(ownerSelector),
-      select(repoSelector),
-    ])
+    const { owner, repo } = yield all({
+      owner: select(ownerSelector),
+      repo: select(repoSelector),
+    })
     if (owner.length > 0 && repo.length === 0 && readySearchRepo(text)) {
       yield fork(fetchRepoesSaga)
     }

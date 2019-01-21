@@ -24,6 +24,7 @@ import {
   goToIssuesSaga,
   hideDropdown,
   HIDE_DROPDOWN,
+  changeDropdownActiveItemSaga,
 } from './search-field'
 
 import {
@@ -46,6 +47,15 @@ test('should has the throttle for an input handler', () => {
   saga
     .next()
     .throttleEffect(200, CHANGED_INPUT_TEXT, handleInputSaga)
+    .next()
+    .isDone()
+})
+
+test('should has the throttle before change an active item', () => {
+  const saga = testSaga(changeDropdownActiveItemSaga)
+  saga
+    .next()
+    .throttleEffect(50, CHANGED_DROPDOWN_ACTIVE_ITEM, setDropdownActiveItemSaga)
     .next()
     .isDone()
 })
@@ -196,8 +206,8 @@ describe('handleInputSaga has only an owner with space splitter', () => {
       .next('owner ')
       .put(setQueryResult('owner', ''))
       .next()
-      .all([select(ownerSelector), select(repoSelector)])
-      .next(['owner', ''])
+      .all({ owner: select(ownerSelector), repo: select(repoSelector) })
+      .next({ owner: 'owner', repo: '' })
       .fork(fetchRepoesSaga)
       .next()
       .isDone()
@@ -224,8 +234,8 @@ describe('handleInputSaga has only an owner with "/" splitter', () => {
       .next('owner/')
       .put(setQueryResult('owner', ''))
       .next()
-      .all([select(ownerSelector), select(repoSelector)])
-      .next(['owner', ''])
+      .all({ owner: select(ownerSelector), repo: select(repoSelector) })
+      .next({ owner: 'owner', repo: '' })
       .fork(fetchRepoesSaga)
       .next()
       .isDone()
@@ -252,8 +262,8 @@ describe('handleInputSaga has an owner and a repo', () => {
       .next('owner repo')
       .put(setQueryResult('owner', 'repo'))
       .next()
-      .all([select(ownerSelector), select(repoSelector)])
-      .next(['owner', 'repo'])
+      .all({ owner: select(ownerSelector), repo: select(repoSelector) })
+      .next({ owner: 'owner', repo: 'repo' })
       .isDone()
   })
 
@@ -324,7 +334,6 @@ test('should create an action when an active item changed', () => {
 
 describe('setDropdownActiveItemSaga', () => {
   test('1 case', () => {
-    const obj = { itemId: 1, name: 'repo' }
     const saga = testSaga(
       setDropdownActiveItemSaga,
       changeDropdownActiveItem({ itemId: 1, name: 'repo' })
@@ -333,15 +342,14 @@ describe('setDropdownActiveItemSaga', () => {
       .next()
       .select(inputTextSelector)
       .next('owner and_some_text')
-      .all([select(ownerSelector), select(repoSelector)])
-      .next(['owner', 'repo'])
+      .all({ owner: select(ownerSelector), repo: select(repoSelector) })
+      .next({ owner: 'owner', repo: 'repo' })
       .put(changeInputText('owner repo'))
       .next()
       .isDone()
   })
 
   test('2 case', () => {
-    const obj = { itemId: 0, name: '' }
     const saga = testSaga(
       setDropdownActiveItemSaga,
       changeDropdownActiveItem({ itemId: 0, name: '' })
@@ -350,13 +358,12 @@ describe('setDropdownActiveItemSaga', () => {
       .next()
       .select(inputTextSelector)
       .next('some_text')
-      .all([select(ownerSelector), select(repoSelector)])
-      .next(['owner', ''])
+      .all({ owner: select(ownerSelector), repo: select(repoSelector) })
+      .next({ owner: 'owner', repo: '' })
       .isDone()
   })
 
   test('3 case', () => {
-    const obj = { itemId: 1, name: 'repo' }
     const saga = testSaga(
       setDropdownActiveItemSaga,
       changeDropdownActiveItem({ itemId: 1, name: 'repo' })
@@ -365,8 +372,8 @@ describe('setDropdownActiveItemSaga', () => {
       .next()
       .select(inputTextSelector)
       .next('owner/and_some_text')
-      .all([select(ownerSelector), select(repoSelector)])
-      .next(['owner', 'repo'])
+      .all({ owner: select(ownerSelector), repo: select(repoSelector) })
+      .next({ owner: 'owner', repo: 'repo' })
       .put(changeInputText('owner/repo'))
       .next()
       .isDone()
@@ -396,8 +403,8 @@ describe('goToIssuesSaga', () => {
     const saga = testSaga(goToIssuesSaga, goToIssues())
     saga
       .next({ quantityOnPage: 30, page: 1 })
-      .all([select(ownerSelector), select(repoSelector)])
-      .next(['owner', 'repo'])
+      .all({ owner: select(ownerSelector), repo: select(repoSelector) })
+      .next({ owner: 'owner', repo: 'repo' })
       .put(push(`/issues/owner/repo/30/1`))
       .next()
       .isDone()
@@ -407,8 +414,8 @@ describe('goToIssuesSaga', () => {
     const saga = testSaga(goToIssuesSaga, goToIssues())
     saga
       .next({ quantityOnPage: 30, page: 1 })
-      .all([select(ownerSelector), select(repoSelector)])
-      .next(['owner', 'repo'])
+      .all({ owner: select(ownerSelector), repo: select(repoSelector) })
+      .next({ owner: 'owner', repo: 'repo' })
       .finish()
       .next()
       .isDone()
