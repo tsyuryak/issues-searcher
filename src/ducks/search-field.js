@@ -218,10 +218,8 @@ export function* fetchRepoesSaga() {
 }
 
 export function* saga() {
-  // yield all([
-  //   searchRepoesSaga(),
-  //   takeLatest(GOTO_TO_ISSUES, goToIssuesSaga),
-  //   changeDropdownActiveItemSaga(),
-  // ])
-  yield race([searchRepoesSaga(), changeDropdownActiveItemSaga()])
+  yield all([
+    race([searchRepoesSaga(), changeDropdownActiveItemSaga()]),
+    takeLatest(GOTO_TO_ISSUES, goToIssuesSaga),
+  ])
 }
