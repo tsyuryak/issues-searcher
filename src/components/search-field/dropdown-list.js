@@ -5,7 +5,7 @@ import styles from './dropdown-list.module.css'
 function DropdownList({
   repoes,
   activeItem,
-  onGoToRepo,
+  onGoToIssues,
   setActiveItem,
   resetActiveItem,
 }) {
@@ -18,9 +18,9 @@ function DropdownList({
       {repoes.map((r, i) => (
         <li
           key={r.id}
-          className={activeItem.num === i + 1 ? styles['active'] : null}
-          onClick={() => onGoToRepo(r.name)}
-          onMouseEnter={() => setActiveItem({ num: i + 1, name: r.name })}
+          className={activeItem.id === i + 1 ? styles['active'] : null}
+          onClick={() => onGoToIssues()}
+          onMouseEnter={() => setActiveItem({ itemId: i + 1, name: r.name })}
         >
           {r.name}
         </li>
@@ -31,14 +31,14 @@ function DropdownList({
 
 DropdownList.propTypes = {
   repoes: PropTypes.array.isRequired,
-  typedValue: PropTypes.string,
   owner: PropTypes.string,
   activeItem: PropTypes.shape({
-    num: PropTypes.number.isRequired,
-    name: PropTypes.string,
+    id: PropTypes.number.isRequired,
+    repo: PropTypes.string,
   }).isRequired,
-  onGoToRepo: PropTypes.func.isRequired,
+  onGoToIssues: PropTypes.func.isRequired,
   setActiveItem: PropTypes.func.isRequired,
+  resetActiveItem: PropTypes.func.isRequired,
 }
 
 export default DropdownList
