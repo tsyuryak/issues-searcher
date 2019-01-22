@@ -155,18 +155,21 @@ export const goToIssues = (quantityOnPage = 30, page = 1) => ({
 export function* goToIssuesSaga(action) {
   const { page, quantityOnPage } = action.payload
 
-  const { owner, repo } = yield all({
-    owner: select(ownerSelector),
-    repo: select(repoSelector),
-  })
-  if (!owner || !repo) {
-    yield put({
-      type: SEARCH_FIELD_ERROR,
-      error: 'should has an owner and an repo',
+  try {
+    const { owner, repo } = yield all({
+      owner: select(ownerSelector),
+      repo: select(repoSelector),
     })
-  } else {
+    if (!owner || !repo) {
+      throw Error('should has an owner and an repo')
+    }
     const url = `/issues/${owner}/${repo}/${quantityOnPage}/${page}`
     yield put(push(url))
+  } catch (error) {
+    yield put({
+      type: SEARCH_FIELD_ERROR,
+      error,
+    })
   }
 }
 
