@@ -9,9 +9,9 @@ import {
   activeItemSelector,
   inputTextSelector,
   changeInputText,
-  hideDropdown,
   repoesSelector,
-  redirectToIssues,
+  goToIssues,
+  hideDropdown,
 } from '../../ducks/search-field'
 import styles from './search-field.module.css'
 import DropdownList from './dropdown-list'
@@ -25,7 +25,7 @@ export class SearchField extends Component {
 
   onHandleSubmit = e => {
     e.preventDefault()
-    this.props.redirectToIssues(this.props.repo)
+    this.props.goToIssues()
   }
 
   getSearchButtonState = () => {
@@ -38,12 +38,11 @@ export class SearchField extends Component {
   }
 
   resetActiveItem = () => {
-    this.props.changeDropdownActiveItem({ num: 0, name: '' })
+    this.props.changeDropdownActiveItem({ id: 0, name: '' })
   }
 
   hideDropdown = () => {
     this.props.hideDropdown()
-    this.resetActiveItem()
   }
 
   handleKeyDown = e => {
@@ -51,25 +50,28 @@ export class SearchField extends Component {
       changeDropdownActiveItem,
       activeItem,
       repoes,
-      redirectToIssues,
+      goToIssues,
     } = this.props
 
+    //Времянка
+    if (repoes.length === 0) return
+    ////
     if (e.keyCode === 40) {
-      let item = activeItem.num % repoes.length
+      let item = activeItem.id % repoes.length
       changeDropdownActiveItem({
-        num: item + 1,
+        itemId: item + 1,
         name: repoes[item].name,
       })
     } else if (e.keyCode === 38) {
       e.preventDefault()
-      let item = activeItem.num % (repoes.length + 1)
+      let item = activeItem.id % (repoes.length + 1)
       item = item <= 1 ? repoes.length + 1 : item
       changeDropdownActiveItem({
-        num: item - 1,
+        itemId: item - 1,
         name: repoes[item - 2].name,
       })
-    } else if (e.keyCode === 13 && activeItem.name) {
-      redirectToIssues(activeItem.name)
+    } else if (e.keyCode === 13) {
+      goToIssues()
     } else if (e.keyCode === 8) {
       this.resetActiveItem()
     }
@@ -91,6 +93,7 @@ export class SearchField extends Component {
       visible,
       changeDropdownActiveItem,
       repoes,
+      goToIssues,
     } = this.props
     return (
       <div className={styles['search-field']}>
@@ -111,7 +114,7 @@ export class SearchField extends Component {
                     activeItem={activeItem}
                     resetActiveItem={this.resetActiveItem}
                     setActiveItem={changeDropdownActiveItem}
-                    onGoToRepo={redirectToIssues}
+                    onGoToIssues={goToIssues}
                   />
                 )}
               </div>
@@ -134,8 +137,8 @@ SearchField.propTypes = {
   loading: PropTypes.bool.isRequired,
   visible: PropTypes.bool.isRequired,
   activeItem: PropTypes.shape({
-    num: PropTypes.number.isRequired,
-    name: PropTypes.string,
+    id: PropTypes.number.isRequired,
+    repo: PropTypes.string,
   }).isRequired,
   owner: PropTypes.string,
   inputText: PropTypes.string.isRequired,
@@ -152,5 +155,5 @@ export default connect(
     activeItem: activeItemSelector(state),
     inputText: inputTextSelector(state),
   }),
-  { changeDropdownActiveItem, changeInputText, hideDropdown, redirectToIssues }
+  { changeDropdownActiveItem, changeInputText, goToIssues, hideDropdown }
 )(SearchField)
