@@ -4,7 +4,6 @@ import {
   fetchIssue,
   issueSelector,
   loadingSelector,
-  loadedSelector,
   userSelector,
 } from '../../ducks/single-issue'
 import history from '../../history'
@@ -49,7 +48,6 @@ class SingleIssue extends Component {
 export default connect(
   state => ({
     loading: loadingSelector(state),
-    loaded: loadedSelector(state),
     issue: issueSelector(state),
     user: userSelector(state),
   }),
