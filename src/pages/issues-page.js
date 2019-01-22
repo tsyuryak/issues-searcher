@@ -1,7 +1,6 @@
 import React from 'react'
-import Issues from '../components/issues/issues-list'
 import { connect } from 'react-redux'
-import SearchField from '../components/search-field'
+import Issues from '../components/issues/issues-list'
 import styles from './styles/issues-page.module.css'
 
 function IssuesPage({ match, locationKey }) {
@@ -9,14 +8,10 @@ function IssuesPage({ match, locationKey }) {
 
   return (
     <div className={styles['container']}>
-      <SearchField query={{ owner, repo }} key={locationKey} />
       <div className={styles['issues']}>
         <Issues
           key={locationKey}
-          owner={owner}
-          repo={repo}
-          perPage={perpage}
-          page={page}
+          params={{ owner, repo, itemsQuantity: perpage, page }}
         />
       </div>
     </div>
