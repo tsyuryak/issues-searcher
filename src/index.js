@@ -7,6 +7,7 @@ import history from './history'
 import App from './app'
 import './styles/index.css'
 import * as serviceWorker from './serviceWorker'
+import { registerObserver } from 'react-perf-devtool'
 //
 const root = (
   <Provider store={store}>
@@ -15,6 +16,7 @@ const root = (
     </ConnectedRouter>
   </Provider>
 )
+registerObserver()
 
 ReactDOM.render(root, document.getElementById('root'))
 
