@@ -1,6 +1,13 @@
 import { appName, axiosInst, baseURL } from '../config'
 import { Record } from 'immutable'
-import { takeLatest, call, put, select, all } from 'redux-saga/effects'
+import {
+  takeLatest,
+  call,
+  put,
+  select,
+  all,
+  takeEvery,
+} from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { createSelector } from 'reselect'
 import { getLastPage } from './issues.utils'
@@ -10,6 +17,7 @@ const prefix = `${appName}/${moduleName}`
 
 export const FETCH_ISSUES_REQUEST = `${prefix}/FETCH_ISSUES_REQUEST`
 export const FETCH_ISSUES_SUCCESS = `${prefix}/FETCH_ISSUES_SUCCESS`
+export const PAGINATOR_REQUEST = `${prefix}/PAGINATOR_REQUEST`
 export const GO_TO_ISSUE_PAGE = `${prefix}/GO_TO_ISSUE_PAGE`
 export const ISSUES_ERROR = `${prefix}/ISSUES_ERROR`
 
@@ -84,6 +92,12 @@ export const lastPageSelector = createSelector(
   state => state.lastPage
 )
 
+export const issuesBaseURLSelector = createSelector(
+  ownerSelector,
+  repoSelector,
+  (owner, repo) => `/issues/${owner}/${repo}`
+)
+
 //AC
 
 export const fetchIssues = params => ({
@@ -101,6 +115,11 @@ export const setFetchSuccess = (data, lastPage) => ({
 
 export const goToIssuePage = url => ({
   type: GO_TO_ISSUE_PAGE,
+  url,
+})
+
+export const paginatorRequest = url => ({
+  type: PAGINATOR_REQUEST,
   url,
 })
 
@@ -137,7 +156,14 @@ export function* goToIssuePageSaga(action) {
   yield put(push(issueUrl))
 }
 
+export function* paginatorRequestSaga(action) {
+  yield put(push(action.url))
+}
+
 export function* saga() {
   yield takeLatest(FETCH_ISSUES_REQUEST, fetchIssuesSaga)
-  yield takeLatest(GO_TO_ISSUE_PAGE, goToIssuePageSaga)
+  yield all([
+    takeLatest(GO_TO_ISSUE_PAGE, goToIssuePageSaga),
+    takeEvery(PAGINATOR_REQUEST, paginatorRequestSaga),
+  ])
 }

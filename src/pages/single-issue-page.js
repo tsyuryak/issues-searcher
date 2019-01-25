@@ -1,5 +1,5 @@
 import React from 'react'
-import SingleIssue from '../components/issues/single-issue'
+import SingleIssue from '../components/issues/single-issue/single-issue'
 import styles from './styles/single-issue-page.module.css'
 
 function SingleIssuePage({ match }) {

@@ -15,6 +15,9 @@ import {
   goToIssuePage,
   GO_TO_ISSUE_PAGE,
   goToIssuePageSaga,
+  paginatorRequest,
+  PAGINATOR_REQUEST,
+  paginatorRequestSaga,
 } from './issues'
 import { getLastPage } from './issues.utils'
 import { axiosInst } from '../config'
@@ -135,5 +138,20 @@ describe('go to single issue', () => {
       .put(push('/repos/axios/axios/issues/1970'))
       .next()
       .isDone()
+  })
+})
+
+describe('paginator', () => {
+  const url = '/test/link'
+  test('should create an pagnator', () => {
+    expect(paginatorRequest(url)).toEqual({
+      type: PAGINATOR_REQUEST,
+      url,
+    })
+  })
+  test('go to page', () => {
+    testSaga(paginatorRequestSaga, paginatorRequest(url))
+      .next()
+      .put(push(url))
   })
 })

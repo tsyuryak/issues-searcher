@@ -33,7 +33,6 @@ describe('an issue fetching', () => {
       .isDone()
   })
   test('should get an error', () => {
-    const req = { data: externalData }
     testSaga(fetchIssueSaga, fetchIssue(url))
       .next()
       .call([axiosInst, axiosInst.get], url)

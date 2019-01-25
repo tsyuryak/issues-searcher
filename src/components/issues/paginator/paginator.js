@@ -5,12 +5,18 @@ import styles from './styles/paginator.module.css'
 
 class Paginator extends Component {
   getLinksInfo = () => {
-    const { baseUrl, quantity, activePage, maxLimit } = this.props.params
+    const {
+      baseUrl,
+      quantity,
+      activePage,
+      maxLimit,
+      perPage,
+    } = this.props.params
 
     const getArray = (start, end, limit) => {
       const resArr = []
       for (let i = start; i < end; i++) {
-        resArr.push({ num: i, url: `${baseUrl}/${i}` })
+        resArr.push({ num: i, url: `${baseUrl}/${perPage}/${i}` })
       }
       return resArr.filter(x => x.num <= limit)
     }
@@ -37,9 +43,15 @@ class Paginator extends Component {
   }
 
   showNext = () => {
-    const { baseUrl, activePage, maxLimit, nextLinkText } = this.props.params
+    const {
+      baseUrl,
+      activePage,
+      maxLimit,
+      nextLinkText,
+      perPage,
+    } = this.props.params
 
-    const url = `${baseUrl}/${activePage + 1}`
+    const url = `${baseUrl}/${perPage}/${activePage + 1}`
     return activePage < maxLimit ? (
       <PageLink
         className={styles['pbutton']}
@@ -51,8 +63,8 @@ class Paginator extends Component {
   }
 
   showPrev = () => {
-    const { baseUrl, activePage, prevLinkText } = this.props.params
-    const url = `${baseUrl}/${activePage - 1}`
+    const { baseUrl, activePage, prevLinkText, perPage } = this.props.params
+    const url = `${baseUrl}/${perPage}/${activePage - 1}`
     return activePage > 1 ? (
       <PageLink
         className={styles['pbutton']}
@@ -64,8 +76,8 @@ class Paginator extends Component {
   }
 
   showFirst = () => {
-    const { baseUrl, activePage, firstLinkText } = this.props.params
-    const url = `${baseUrl}/1`
+    const { baseUrl, activePage, firstLinkText, perPage } = this.props.params
+    const url = `${baseUrl}/${perPage}/1`
     return activePage > 1 ? (
       <PageLink
         className={styles['pbutton']}
@@ -77,8 +89,14 @@ class Paginator extends Component {
   }
 
   showLast = () => {
-    const { baseUrl, activePage, lastLinkText, maxLimit } = this.props.params
-    const url = `${baseUrl}/${maxLimit}`
+    const {
+      baseUrl,
+      activePage,
+      lastLinkText,
+      maxLimit,
+      perPage,
+    } = this.props.params
+    const url = `${baseUrl}/${perPage}/${maxLimit}`
     return activePage < maxLimit ? (
       <PageLink
         className={styles['pbutton']}

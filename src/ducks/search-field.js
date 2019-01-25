@@ -60,7 +60,7 @@ export default function reducer(state = ReducerRecord(), action) {
         .set('itemId', action.item.itemId)
         .set('repo', action.item.name)
     case SEARCH_FIELD_ERROR:
-      return state.set('error', action.error)
+      return state.set('error', action.error).set('loading', false)
     case HIDE_DROPDOWN:
       return state.set('repoes', [])
     default:

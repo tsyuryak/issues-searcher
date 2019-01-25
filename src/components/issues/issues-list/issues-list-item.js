@@ -1,6 +1,6 @@
 import React from 'react'
-import { toLocalDateTime } from '../../helpers'
-import styles from './styles/issues-list-item.module.css'
+import { toLocalDateTime } from '../../../helpers'
+import styles from './issues-list-item.module.css'
 
 function IssuesListItem({ number, title, dateTime }) {
   const ldt = toLocalDateTime(dateTime)

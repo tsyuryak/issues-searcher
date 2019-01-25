@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Issues from '../components/issues/issues-list'
+import Issues from '../components/issues/issues'
 import styles from './styles/issues-page.module.css'
 
 function IssuesPage({ match, locationKey }) {
@@ -8,12 +8,10 @@ function IssuesPage({ match, locationKey }) {
 
   return (
     <div className={styles['container']}>
-      <div className={styles['issues']}>
-        <Issues
-          key={locationKey}
-          params={{ owner, repo, itemsQuantity: perpage, page }}
-        />
-      </div>
+      <Issues
+        key={locationKey}
+        params={{ owner, repo, itemsQuantity: perpage, page }}
+      />
     </div>
   )
 }
