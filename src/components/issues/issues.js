@@ -60,7 +60,7 @@ class Issues extends Component {
               ...params1,
               baseUrl,
               maxLimit: lastPage,
-              quantity: 8,
+              quantity: 6,
               activePage: +currentPage,
               perPage,
             }}

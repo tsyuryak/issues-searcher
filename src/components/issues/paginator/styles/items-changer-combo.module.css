@@ -1,0 +1,58 @@
+.ui-combobox {
+  font-size: 15px;
+  padding: 15px;
+  border: 1px solid white;
+  background-color: rgb(21, 4, 173);
+  border-radius: 5px; 
+  display:inline-block;
+  position:relative;
+  line-height:normal;
+  user-select:none;
+  text-align:left;
+  color: white;
+  width: 100%;
+}
+
+
+.ui-combobox::after {
+  content:"▼";
+  font-size:1em;
+  right:.6em;
+}
+
+.ui-combobox:hover {
+  color:  rgb(21, 4, 173);
+  font-weight: bold;
+  background-color: white;
+  cursor: pointer;
+}
+
+.combo-items {
+  position: absolute;
+  bottom: 50px;
+  z-index: 10;
+  background-color: white;
+  border-radius: 5px; 
+  width: 100%;
+  border: 1px solid rgb(21, 4, 173);
+}
+
+.combo-items li:hover {
+  background-color: rgb(153, 153, 211);
+  cursor: pointer;
+}
+
+.combo-items li:first-child {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.combo-items li:last-child {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.combo-items li div {
+  text-align: center;
+  padding: 3px 0;
+}

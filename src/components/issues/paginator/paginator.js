@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageLink from './page-link'
+import ComboBox from './items-changer-combo'
 import styles from './styles/paginator.module.css'
 
 class Paginator extends Component {
@@ -22,7 +23,7 @@ class Paginator extends Component {
     }
 
     let startVal = 1
-    if (activePage > quantity) {
+    if (activePage >= quantity) {
       startVal =
         quantity % 2 !== 0
           ? activePage - Math.floor(quantity / 2)
@@ -35,11 +36,27 @@ class Paginator extends Component {
 
   state = {
     linksInfo: [],
+    dropupVisible: false,
   }
 
   goToPage = (e, url) => {
     e.preventDefault()
     this.props.onGoToPage(url)
+  }
+
+  hideDropup = () => {
+    this.setState(state => {
+      if (state.dropupVisible) {
+        return { dropupVisible: false }
+      }
+    })
+  }
+
+  toggleDropup = e => {
+    e.stopPropagation()
+    return this.setState(state => ({
+      dropupVisible: !state.dropupVisible,
+    }))
   }
 
   showNext = () => {
@@ -128,20 +145,36 @@ class Paginator extends Component {
       return null
     }
     return (
-      <ul className={styles['container']}>
-        <li>{this.showFirst()}</li>
-        <li>{this.showPrev()}</li>
-        {this.state.linksInfo.map(info => (
-          <li key={info.num}>{this.showLink(info)}</li>
-        ))}
-        <li>{this.showNext()}</li>
-        <li>{this.showLast()}</li>
-      </ul>
+      <div className={styles['container']}>
+        <ul className={styles['pagination']}>
+          <li>{this.showFirst()}</li>
+          <li>{this.showPrev()}</li>
+          {this.state.linksInfo.map(info => (
+            <li key={info.num}>{this.showLink(info)}</li>
+          ))}
+          <li>{this.showNext()}</li>
+          <li>{this.showLast()}</li>
+        </ul>
+        <div style={{ marginLeft: '5px' }}>
+          <ComboBox
+            quantity={this.props.params.perPage}
+            dropupVisible={this.state.dropupVisible}
+            toggleCombo={e => this.toggleDropup(e)}
+            baseUrl={this.props.params.baseUrl}
+            changeQuantity={this.goToPage}
+          />
+        </div>
+      </div>
     )
   }
 
   componentDidMount() {
     this.setState({ linksInfo: this.getLinksInfo() })
+    window.addEventListener('click', this.hideDropup)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.hideDropup)
   }
 }
 
