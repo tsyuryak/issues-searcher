@@ -9,10 +9,6 @@ export const params1 = {
   activePage: 1,
   quantity: 10,
   maxLimit: 10,
-  nextLinkText: 'Next',
-  prevLinkText: 'Prev',
-  firstLinkText: 'First',
-  lastLinkText: 'Last',
 }
 
 export const actions = {

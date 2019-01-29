@@ -27,13 +27,9 @@
   padding: 15px;
   border: 1px solid white;
   background-color: rgb(21, 4, 173);
-  border-radius: 5px; 
-}
-
-a {
-  text-decoration: none;
+  border-radius: 5px;
   color: rgb(180, 172, 216);
-  font-weight: bold;
+  font-weight: bold; 
 }
 
 .pbutton.active, .pbutton.active:hover {
@@ -46,10 +42,8 @@ a {
 .pbutton:hover {
   box-shadow: 0 0 5px 3px white;
   cursor: pointer;
-}
-
-.pbutton:hover a{
   color: white;
+  font-weight: bold;
 }
 
 

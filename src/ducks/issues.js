@@ -69,12 +69,12 @@ export const repoSelector = createSelector(
 
 export const itemsQuantitySelector = createSelector(
   stateSelector,
-  state => state.itemsQuantity
+  state => +state.itemsQuantity //Requaires num type
 )
 
 export const pageSelector = createSelector(
   stateSelector,
-  state => state.page
+  state => +state.page //Requaires num type
 )
 
 export const loadingSelector = createSelector(

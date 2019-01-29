@@ -1,47 +1,47 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import PageLink from './page-link'
-import ComboBox from './items-changer-combo'
+import loadableVisibility from 'react-loadable-visibility/loadable-components'
+import {
+  init,
+  baseUrlSelector,
+  activePageSelector,
+  quantitySelector,
+  maxLimitSelector,
+  paginatorViewContentSelector,
+  toFirstPage,
+  toLastPage,
+  toPageByNum,
+  toPrevPage,
+  toNextPage,
+  perPagePageSelector,
+  toURL,
+} from '../../../ducks/paginator'
 import styles from './styles/paginator.module.css'
 
+const ComboBox = loadableVisibility(() => import('./items-changer-combo'))
+const PageLink = loadableVisibility(() => import('./page-link'))
+
+const text = {
+  next: 'Next',
+  prev: 'Prev',
+  first: 'First',
+  last: 'Last',
+}
+
 class Paginator extends Component {
-  getLinksInfo = () => {
-    const {
-      baseUrl,
-      quantity,
-      activePage,
-      maxLimit,
-      perPage,
-    } = this.props.params
-
-    const getArray = (start, end, limit) => {
-      const resArr = []
-      for (let i = start; i < end; i++) {
-        resArr.push({ num: i, url: `${baseUrl}/${perPage}/${i}` })
-      }
-      return resArr.filter(x => x.num <= limit)
-    }
-
-    let startVal = 1
-    if (activePage >= quantity) {
-      startVal =
-        quantity % 2 !== 0
-          ? activePage - Math.floor(quantity / 2)
-          : activePage - quantity / 2 + 1
-      return getArray(startVal, quantity + startVal, maxLimit)
-    }
-
-    return getArray(startVal, quantity + 1, maxLimit)
+  constructor(props) {
+    super(props)
+    props.init(props.params)
   }
 
   state = {
-    linksInfo: [],
     dropupVisible: false,
   }
 
   goToPage = (e, url) => {
     e.preventDefault()
-    this.props.onGoToPage(url)
+    this.props.toURL(url)
   }
 
   hideDropup = () => {
@@ -60,88 +60,71 @@ class Paginator extends Component {
   }
 
   showNext = () => {
-    const {
-      baseUrl,
-      activePage,
-      maxLimit,
-      nextLinkText,
-      perPage,
-    } = this.props.params
-
-    const url = `${baseUrl}/${perPage}/${activePage + 1}`
-    return activePage < maxLimit ? (
+    const { activePage, maxLimit, toNextPage } = this.props
+    return (
       <PageLink
+        visible={activePage < maxLimit}
         className={styles['pbutton']}
-        url={url}
-        text={nextLinkText}
-        goToPage={this.goToPage}
+        text={text.next}
+        goToPage={toNextPage}
       />
-    ) : null
+    )
   }
 
   showPrev = () => {
-    const { baseUrl, activePage, prevLinkText, perPage } = this.props.params
-    const url = `${baseUrl}/${perPage}/${activePage - 1}`
-    return activePage > 1 ? (
+    const { activePage, toPrevPage } = this.props
+    return (
       <PageLink
+        visible={activePage > 1}
         className={styles['pbutton']}
-        url={url}
-        text={prevLinkText}
-        goToPage={this.goToPage}
+        text={text.prev}
+        goToPage={toPrevPage}
       />
-    ) : null
+    )
   }
 
   showFirst = () => {
-    const { baseUrl, activePage, firstLinkText, perPage } = this.props.params
-    const url = `${baseUrl}/${perPage}/1`
-    return activePage > 1 ? (
+    const { activePage, toFirstPage } = this.props
+    return (
       <PageLink
+        visible={activePage > 1}
         className={styles['pbutton']}
-        url={url}
-        text={firstLinkText}
-        goToPage={this.goToPage}
+        text={text.first}
+        goToPage={toFirstPage}
       />
-    ) : null
+    )
   }
 
   showLast = () => {
-    const {
-      baseUrl,
-      activePage,
-      lastLinkText,
-      maxLimit,
-      perPage,
-    } = this.props.params
-    const url = `${baseUrl}/${perPage}/${maxLimit}`
-    return activePage < maxLimit ? (
+    const { activePage, maxLimit, toLastPage } = this.props
+    return (
       <PageLink
+        visible={activePage < maxLimit}
         className={styles['pbutton']}
-        url={url}
-        text={lastLinkText}
-        goToPage={this.goToPage}
+        text={text.last}
+        goToPage={toLastPage}
       />
-    ) : null
+    )
   }
 
   showLink = info => {
-    const { activePage } = this.props.params
-    return info.num !== activePage ? (
+    const { activePage, toPageByNum } = this.props
+    return (
       <PageLink
-        className={styles['pbutton']}
-        url={info.url}
+        visible
+        className={`${styles['pbutton']} ${
+          info.num === activePage ? styles['active'] : null
+        }`}
         text={info.num}
-        goToPage={this.goToPage}
+        goToPage={
+          info.num === activePage ? () => false : () => toPageByNum(info.num)
+        }
       />
-    ) : (
-      <div className={`${styles['pbutton']} ${styles['active']}`}>
-        {info.num}
-      </div>
     )
   }
 
   render() {
-    if (!this.state.linksInfo.length) {
+    if (!this.props.paginatorContent.length) {
       return null
     }
     return (
@@ -149,18 +132,18 @@ class Paginator extends Component {
         <ul className={styles['pagination']}>
           <li>{this.showFirst()}</li>
           <li>{this.showPrev()}</li>
-          {this.state.linksInfo.map(info => (
+          {this.props.paginatorContent.map(info => (
             <li key={info.num}>{this.showLink(info)}</li>
           ))}
           <li>{this.showNext()}</li>
           <li>{this.showLast()}</li>
         </ul>
-        <div style={{ marginLeft: '5px' }}>
+        <div style={{ marginLeft: '10px' }}>
           <ComboBox
-            quantity={this.props.params.perPage}
+            quantity={this.props.perPage}
             dropupVisible={this.state.dropupVisible}
             toggleCombo={e => this.toggleDropup(e)}
-            baseUrl={this.props.params.baseUrl}
+            baseUrl={this.props.baseUrl}
             changeQuantity={this.goToPage}
           />
         </div>
@@ -169,7 +152,6 @@ class Paginator extends Component {
   }
 
   componentDidMount() {
-    this.setState({ linksInfo: this.getLinksInfo() })
     window.addEventListener('click', this.hideDropup)
   }
 
@@ -179,7 +161,7 @@ class Paginator extends Component {
 }
 
 Paginator.defaultProps = {
-  activePage: 1,
+  paginatorContent: [],
 }
 
 Paginator.propTypes = {
@@ -188,12 +170,18 @@ Paginator.propTypes = {
     activePage: PropTypes.number.isRequired,
     maxLimit: PropTypes.number.isRequired,
     quantity: PropTypes.number.isRequired,
-    nextLinkText: PropTypes.string.isRequired,
-    prevLinkText: PropTypes.string.isRequired,
-    firstLinkText: PropTypes.string.isRequired,
-    lastLinkText: PropTypes.string.isRequired,
   }),
   onGoToPage: PropTypes.func.isRequired,
 }
 
-export default Paginator
+export default connect(
+  state => ({
+    baseUrl: baseUrlSelector(state),
+    activePage: activePageSelector(state),
+    quantity: quantitySelector(state),
+    maxLimit: maxLimitSelector(state),
+    paginatorContent: paginatorViewContentSelector(state),
+    perPage: perPagePageSelector(state),
+  }),
+  { init, toFirstPage, toLastPage, toPageByNum, toPrevPage, toNextPage, toURL }
+)(Paginator)

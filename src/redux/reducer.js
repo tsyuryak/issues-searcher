@@ -7,6 +7,9 @@ import singleIssueReducer, {
 import searchFieldReducer, {
   moduleName as searchFieldModule,
 } from '../ducks/search-field'
+import paginatorReducer, {
+  moduleName as paginatorModeule,
+} from '../ducks/paginator'
 
 export default history =>
   combineReducers({
@@ -14,4 +17,5 @@ export default history =>
     [issuesModule]: issuesReducer,
     [singleIssueModule]: singleIssueReducer,
     [searchFieldModule]: searchFieldReducer,
+    [paginatorModeule]: paginatorReducer,
   })

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import LoadableVisibility from 'react-loadable-visibility/react-loadable'
+import loadableVisibility from 'react-loadable-visibility/loadable-components'
 import PropTypes from 'prop-types'
 import uniqid from 'uniqid'
 import {
@@ -11,24 +11,18 @@ import {
   issuesBaseURLSelector,
   pageSelector,
   itemsQuantitySelector,
-  paginatorRequest,
+  loadingSelector,
 } from '../../ducks/issues'
 import styles from './styles/issues.module.css'
-import Loader from '../loader'
+//import Loader from '../loader'
 
 //TMP
 import { params1 } from './paginator/paginator.stories.js'
 //import Paginator from './paginator/paginator'
 
-const IssuesList = LoadableVisibility({
-  loader: () => import('./issues-list/issues-list'),
-  loading: Loader,
-})
-
-const Paginator = LoadableVisibility({
-  loader: () => import('./paginator/paginator'),
-  loading: () => '',
-})
+const IssuesList = loadableVisibility(() => import('./issues-list/issues-list'))
+const Paginator = loadableVisibility(() => import('./paginator/paginator'))
+const Loader = loadableVisibility(() => import('../loader'))
 
 class Issues extends Component {
   constructor(props) {
@@ -37,35 +31,28 @@ class Issues extends Component {
   }
 
   showIssues = () => {
-    const { issues } = this.props
-    return <IssuesList issues={issues} goToIssue={this.props.goToIssuePage} />
+    const { issues, loading } = this.props
+    return !loading ? (
+      <IssuesList issues={issues} goToIssue={this.props.goToIssuePage} />
+    ) : (
+      <Loader />
+    )
   }
 
   render() {
-    const {
+    const { lastPage, baseUrl, currentPage, perPage } = this.props
+    const initParams = {
       baseUrl,
-      lastPage,
-      currentPage,
-      paginatorRequest,
+      maxLimit: lastPage,
+      quantity: 6,
+      activePage: +currentPage,
       perPage,
-    } = this.props
-
+    }
     return (
       <div className={styles['container']}>
         {this.showIssues()}
         <div className={styles['paginator']}>
-          <Paginator
-            key={uniqid()}
-            params={{
-              ...params1,
-              baseUrl,
-              maxLimit: lastPage,
-              quantity: 6,
-              activePage: +currentPage,
-              perPage,
-            }}
-            onGoToPage={paginatorRequest}
-          />
+          <Paginator key={uniqid()} params={initParams} />
         </div>
       </div>
     )
@@ -73,10 +60,14 @@ class Issues extends Component {
 }
 
 Issues.propTypes = {
+  issues: PropTypes.array.isRequired,
+  lastPage: PropTypes.number.isRequired,
+  baseUrl: PropTypes.string.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  loading: PropTypes.bool.isRequired,
+  perPage: PropTypes.number.isRequired,
   fetchIssues: PropTypes.func.isRequired,
   goToIssuePage: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  issues: PropTypes.array.isRequired,
 }
 
 export default connect(
@@ -86,6 +77,7 @@ export default connect(
     baseUrl: issuesBaseURLSelector(state),
     currentPage: pageSelector(state),
     perPage: itemsQuantitySelector(state),
+    loading: loadingSelector(state),
   }),
-  { fetchIssues, goToIssuePage, paginatorRequest }
+  { fetchIssues, goToIssuePage }
 )(Issues)
