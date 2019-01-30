@@ -1,11 +1,17 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
-import SearchField from './components/search-field/search-field'
-import IssuesPage from './pages/issues-page'
-import SingleIssuePage from './pages/single-issue-page'
-import Status404 from './pages/status404-page'
-import HomePage from './pages/home-page'
+import loadableVisibility from 'react-loadable-visibility/loadable-components'
 import styles from './styles/app.module.css'
+
+const SearchField = loadableVisibility(() =>
+  import('./components/search-field/search-field')
+)
+const IssuesPage = loadableVisibility(() => import('./pages/issues-page'))
+const SingleIssuePage = loadableVisibility(() =>
+  import('./pages/single-issue-page')
+)
+const Status404 = loadableVisibility(() => import('./pages/status404-page'))
+const HomePage = loadableVisibility(() => import('./pages/home-page'))
 
 function App() {
   return (
