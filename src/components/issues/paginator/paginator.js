@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import loadableVisibility from 'react-loadable-visibility/loadable-components'
+import uniqid from 'uniqid'
 import {
   init,
   baseUrlSelector,
@@ -18,9 +18,8 @@ import {
   toURL,
 } from '../../../ducks/paginator'
 import styles from './styles/paginator.module.css'
-
-const ComboBox = loadableVisibility(() => import('./items-changer-combo'))
-const PageLink = loadableVisibility(() => import('./page-link'))
+import ComboBox from './items-changer-combo'
+import PageLink from './page-link'
 
 const text = {
   next: 'Next',
@@ -28,7 +27,6 @@ const text = {
   first: 'First',
   last: 'Last',
 }
-
 class Paginator extends Component {
   constructor(props) {
     super(props)
@@ -107,18 +105,16 @@ class Paginator extends Component {
     )
   }
 
-  showLink = info => {
+  showLink = item => {
     const { activePage, toPageByNum } = this.props
     return (
       <PageLink
-        visible
+        visible={true}
         className={`${styles['pbutton']} ${
-          info.num === activePage ? styles['active'] : null
+          item === activePage ? styles['active'] : null
         }`}
-        text={info.num}
-        goToPage={
-          info.num === activePage ? () => false : () => toPageByNum(info.num)
-        }
+        text={item}
+        goToPage={item === activePage ? () => false : () => toPageByNum(item)}
       />
     )
   }
@@ -132,8 +128,8 @@ class Paginator extends Component {
         <ul className={styles['pagination']}>
           <li>{this.showFirst()}</li>
           <li>{this.showPrev()}</li>
-          {this.props.paginatorContent.map(info => (
-            <li key={info.num}>{this.showLink(info)}</li>
+          {this.props.paginatorContent.map(item => (
+            <li key={uniqid()}>{this.showLink(item)}</li>
           ))}
           <li>{this.showNext()}</li>
           <li>{this.showLast()}</li>
@@ -171,7 +167,6 @@ Paginator.propTypes = {
     maxLimit: PropTypes.number.isRequired,
     quantity: PropTypes.number.isRequired,
   }),
-  onGoToPage: PropTypes.func.isRequired,
 }
 
 export default connect(
