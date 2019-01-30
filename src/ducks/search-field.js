@@ -22,7 +22,6 @@ export const moduleName = 'search-field'
 const prefix = `${appName}/${moduleName}`
 
 //Constants
-
 export const SET_QUERY_RESULT = `${prefix}/SET_QUERY_RESULT`
 export const CHANGED_INPUT_TEXT = `${prefix}/CHANGED_INPUT_TEXT`
 export const FECTH_REPOES_SUCCESS = `${prefix}/FECTH_REPOES_SUCCESS`
@@ -164,7 +163,7 @@ export function* goToIssuesSaga(action) {
       throw Error('should has an owner and an repo')
     }
     const url = `/issues/${owner}/${repo}/${quantityOnPage}/${page}`
-    yield put(push(url))
+    yield all([put(push(url)), put(hideDropdown())])
   } catch (error) {
     yield put({
       type: SEARCH_FIELD_ERROR,

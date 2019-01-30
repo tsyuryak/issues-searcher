@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import LoadableVisibility from 'react-loadable-visibility/react-loadable'
+import loadableVisibility from 'react-loadable-visibility/loadable-components'
 
 import {
   fetchIssue,
@@ -9,13 +9,9 @@ import {
   userSelector,
 } from '../../../ducks/single-issue'
 import history from '../../../history'
-import Loader from '../../loader'
 
-const IssueView = LoadableVisibility({
-  loader: () => import('./issue-view'),
-  loading: Loader,
-  delay: 200,
-})
+const IssueView = loadableVisibility(() => import('./issue-view'))
+const Loader = loadableVisibility(() => import('../../loader'))
 
 class SingleIssue extends Component {
   constructor(props) {
@@ -25,7 +21,9 @@ class SingleIssue extends Component {
   render() {
     const { avatar_url, html_url, login } = this.props.user
     const { title, body } = this.props.issue
-    return (
+    return this.props.loading ? (
+      <Loader />
+    ) : (
       <IssueView
         avatar_url={avatar_url}
         html_url={html_url}

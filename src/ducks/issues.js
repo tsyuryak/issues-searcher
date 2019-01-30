@@ -8,7 +8,7 @@ import {
   all,
   takeEvery,
 } from 'redux-saga/effects'
-import { push } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { createSelector } from 'reselect'
 import { getLastPage } from './issues.utils'
 
@@ -145,7 +145,7 @@ export function* fetchIssuesSaga() {
         type: ISSUES_ERROR,
         error,
       }),
-      put(push('/404')),
+      put(replace('/404')),
     ])
   }
 }

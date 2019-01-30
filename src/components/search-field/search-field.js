@@ -29,11 +29,11 @@ export class SearchField extends Component {
   }
 
   getSearchButtonState = () => {
-    const { loading } = this.props
+    const { loading, inputText } = this.props
 
     return {
       text: !loading ? 'Search' : 'Loading repo...',
-      disabled: loading,
+      disabled: loading || !inputText,
     }
   }
 
@@ -42,7 +42,9 @@ export class SearchField extends Component {
   }
 
   hideDropdown = () => {
-    this.props.hideDropdown()
+    if (this.props.visible) {
+      this.props.hideDropdown()
+    }
   }
 
   handleKeyDown = e => {
@@ -53,9 +55,6 @@ export class SearchField extends Component {
       goToIssues,
     } = this.props
 
-    //Времянка
-    if (repoes.length === 0) return
-    ////
     if (e.keyCode === 40) {
       let item = activeItem.id % repoes.length
       changeDropdownActiveItem({
@@ -106,7 +105,11 @@ export class SearchField extends Component {
                   onChange={e => this.handleInputText(e)}
                   value={inputText}
                   autoFocus
-                  onKeyDown={e => this.handleKeyDown(e)}
+                  onKeyDown={
+                    repoes.length === 0
+                      ? () => false
+                      : e => this.handleKeyDown(e)
+                  }
                 />
                 {visible && (
                   <DropdownList

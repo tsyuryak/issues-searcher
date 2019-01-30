@@ -54,18 +54,16 @@ export const perPagePageSelector = createSelector(
   state => state.perPage
 )
 export const paginatorViewContentSelector = createSelector(
-  baseUrlSelector,
   activePageSelector,
   quantitySelector,
   maxLimitSelector,
-  perPagePageSelector,
-  (baseUrl, activePage, quantity, maxLimit, perPage) => {
+  (activePage, quantity, maxLimit) => {
     const getArray = (start, end, limit) => {
       const resArr = []
       for (let i = start; i < end; i++) {
-        resArr.push({ num: i, url: `${baseUrl}/${perPage}/${i}` })
+        resArr.push(i)
       }
-      return resArr.filter(x => x.num <= limit)
+      return resArr.filter(item => item <= limit)
     }
 
     let startVal = 1
