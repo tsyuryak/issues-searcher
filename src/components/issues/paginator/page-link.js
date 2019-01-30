@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-function PageLink({ visible, url, text, goToPage, className }) {
+function PageLink({ visible, text, goToPage, className }) {
   return visible ? (
     <div className={className} onClick={() => goToPage()}>
       {text}
