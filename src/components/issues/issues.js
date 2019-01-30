@@ -14,11 +14,6 @@ import {
   loadingSelector,
 } from '../../ducks/issues'
 import styles from './styles/issues.module.css'
-//import Loader from '../loader'
-
-//TMP
-import { params1 } from './paginator/paginator.stories.js'
-//import Paginator from './paginator/paginator'
 
 const IssuesList = loadableVisibility(() => import('./issues-list/issues-list'))
 const Paginator = loadableVisibility(() => import('./paginator/paginator'))
@@ -44,7 +39,7 @@ class Issues extends Component {
     const initParams = {
       baseUrl,
       maxLimit: lastPage,
-      quantity: 6,
+      quantity: 5,
       activePage: +currentPage,
       perPage,
     }
