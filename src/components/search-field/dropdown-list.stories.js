@@ -2,7 +2,6 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withRedux } from '../../../.storybook/decorators'
-import { createDropDownList } from './search-field.stories'
 import DropdownList from './dropdown-list'
 
 export const actions = {
