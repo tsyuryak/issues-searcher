@@ -57,7 +57,7 @@ class Paginator extends Component {
     }))
   }
 
-  showNext = () => {
+  get next() {
     const { activePage, maxLimit, toNextPage } = this.props
     return (
       <PageLink
@@ -69,7 +69,7 @@ class Paginator extends Component {
     )
   }
 
-  showPrev = () => {
+  get prev() {
     const { activePage, toPrevPage } = this.props
     return (
       <PageLink
@@ -81,7 +81,7 @@ class Paginator extends Component {
     )
   }
 
-  showFirst = () => {
+  get first() {
     const { activePage, toFirstPage } = this.props
     return (
       <PageLink
@@ -93,7 +93,7 @@ class Paginator extends Component {
     )
   }
 
-  showLast = () => {
+  get last() {
     const { activePage, maxLimit, toLastPage } = this.props
     return (
       <PageLink
@@ -126,13 +126,13 @@ class Paginator extends Component {
     return (
       <div className={styles['container']}>
         <ul className={styles['pagination']}>
-          <li>{this.showFirst()}</li>
-          <li>{this.showPrev()}</li>
+          <li>{this.first}</li>
+          <li>{this.prev}</li>
           {this.props.paginatorContent.map(item => (
             <li key={uniqid()}>{this.showLink(item)}</li>
           ))}
-          <li>{this.showNext()}</li>
-          <li>{this.showLast()}</li>
+          <li>{this.next}</li>
+          <li>{this.last}</li>
         </ul>
         <div style={{ marginLeft: '10px' }}>
           <ComboBox
